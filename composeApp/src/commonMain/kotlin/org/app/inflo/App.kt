@@ -16,37 +16,40 @@ import androidx.compose.ui.unit.IntOffset
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.transition.NavTransition
-import org.app.inflo.navigation.InfloNavigationManagerImpl
-import org.app.inflo.navigation.InfloNavigationRequest
+import org.app.inflo.navigation.InfloNavigationManager
 import org.app.inflo.navigation.InfloScenes
 import org.app.inflo.navigation.args.SplashArgs
 import org.app.inflo.navigation.rememberInfloNavigator
 import org.app.inflo.navigation.resolveCompletePath
 import org.app.inflo.navigation.setupScreen
+import org.koin.compose.KoinContext
+import org.koin.compose.koinInject
 
 @Composable
 fun App() {
     PreComposeApp {
-        MaterialTheme {
-            val navigationManager = remember { InfloNavigationManagerImpl() }
-            val infloNavigator = rememberInfloNavigator()
+        KoinContext {
+            MaterialTheme {
+                val navigationManager = koinInject<InfloNavigationManager>()
+                val infloNavigator = rememberInfloNavigator()
 
-            LaunchedEffect(navigationManager, infloNavigator) {
-                navigationManager.registerNavigator(infloNavigator)
-            }
+                LaunchedEffect(navigationManager, infloNavigator) {
+                    navigationManager.registerNavigator(infloNavigator)
+                }
 
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                NavHost(
+                Surface(
                     modifier = Modifier.fillMaxSize(),
-                    navigator = infloNavigator.navigator,
-                    navTransition = remember { InfloNavTransition() },
-                    initialRoute = SplashArgs.resolveCompletePath(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    InfloScenes.entries.forEach { scene ->
-                        setupScreen(scene, navigationManager)
+                    NavHost(
+                        modifier = Modifier.fillMaxSize(),
+                        navigator = infloNavigator.navigator,
+                        navTransition = remember { InfloNavTransition() },
+                        initialRoute = SplashArgs.resolveCompletePath(),
+                    ) {
+                        InfloScenes.entries.forEach { scene ->
+                            setupScreen(scene, navigationManager)
+                        }
                     }
                 }
             }
