@@ -45,7 +45,7 @@ fun App() {
                         modifier = Modifier.fillMaxSize(),
                         navigator = infloNavigator.navigator,
                         navTransition = remember { InfloNavTransition() },
-                        initialRoute = SplashArgs.resolveCompletePath(),
+                        initialRoute = InfloScenes.Splash.baseRoute,
                     ) {
                         InfloScenes.entries.forEach { scene ->
                             setupScreen(scene, navigationManager)

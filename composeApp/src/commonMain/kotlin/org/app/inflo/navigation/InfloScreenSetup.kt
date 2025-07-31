@@ -1,18 +1,30 @@
 package org.app.inflo.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import moe.tlaster.precompose.navigation.RouteBuilder
+import moe.tlaster.precompose.stateholder.StateHolder
+import org.app.inflo.core.viewmodel.ViewModelFactory
+import org.app.inflo.navigation.args.HomeArgs
 import org.app.inflo.navigation.args.LoginArgs
+import org.app.inflo.navigation.args.OnboardingArgs
 import org.app.inflo.navigation.args.SceneArgs
 import org.app.inflo.navigation.args.SplashArgs
 import org.app.inflo.screens.LoginScreen
 import org.app.inflo.screens.SplashScreen
+import org.app.inflo.screens.splash.SplashViewModel
 
 fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigationManager) {
     when (scene) {
         InfloScenes.Splash -> {
-            sceneWithSafeArgs<SplashArgs>(scene) {
-                SplashScreen(navigationManager)
+            scene(scene.baseRoute) {
+                SplashScreen(
+                    viewModel = ViewModelFactory.viewModel(
+                        vmClass = SplashViewModel::class,
+                        args = SplashArgs,
+                        stateHolder = it.stateHolder
+                    )
+                )
             }
         }
         
@@ -21,15 +33,26 @@ fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigat
                 LoginScreen(navigationManager)
             }
         }
+
+        InfloScenes.Home -> {
+            sceneWithSafeArgs<HomeArgs>(scene) {
+                Text("Home")
+            }
+        }
+        InfloScenes.Onboarding -> {
+            sceneWithSafeArgs<OnboardingArgs>(scene) {
+                Text("Onboarding")
+            }
+        }
     }
 }
 
 private inline fun <reified ARGS : SceneArgs> RouteBuilder.sceneWithSafeArgs(
     scene: InfloScenes,
-    crossinline content: @Composable (ARGS) -> Unit
+    crossinline content: @Composable ARGS.(StateHolder) -> Unit
 ) {
     scene(route = scene.baseRoute) { backStackEntry ->
         val args = backStackEntry.getQueryArgsOrNullIfInvalid() as ARGS
-        content(args)
+        args.content(backStackEntry.stateHolder)
     }
 } 

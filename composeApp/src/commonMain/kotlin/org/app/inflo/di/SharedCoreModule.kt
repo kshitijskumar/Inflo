@@ -9,8 +9,10 @@ import org.app.inflo.core.data.local.AppLocalDataSource
 import org.app.inflo.core.data.local.AppLocalDataSourceImpl
 import org.app.inflo.navigation.InfloNavigationManager
 import org.app.inflo.navigation.InfloNavigationManagerImpl
+import org.app.inflo.screens.splash.SplashViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -24,14 +26,17 @@ private fun commonModule() = module {
     singleOf(::InfloNavigationManagerImpl) { bind<InfloNavigationManager>() }
     
     // Repository
-    singleOf(::AppRepositoryImpl) { bind<AppRepository>() }
+    factoryOf(::AppRepositoryImpl) { bind<AppRepository>() }
     
     // Data Sources
-    single<AppLocalDataSource> {
+    factory<AppLocalDataSource> {
         AppLocalDataSourceImpl(
             dataStore = get(named(DataStoreConstants.APP_DATA_STORE))
         )
     }
+    
+    // ViewModels
+    factoryOf(::SplashViewModel)
     
     // Remote data source will be provided when network module is added
     // factory<AppRemoteDataSource> { ... }

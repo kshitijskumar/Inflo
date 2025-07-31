@@ -1,5 +1,6 @@
 package org.app.inflo.screens.splash
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
@@ -29,6 +30,7 @@ class SplashViewModel(
     }
 
     private fun handleInitialisationIntent() = viewModelScope.launch {
+        delay(SPLASH_DELAY)
         // First check if user is logged in
         val loggedInUser = repository.loggedInUser().firstOrNull()
         if (loggedInUser != null) {
@@ -67,5 +69,9 @@ class SplashViewModel(
         navigationManager.navigate(
             args = LoginArgs(profileType = intent.type)
         )
+    }
+
+    companion object {
+        private const val SPLASH_DELAY = 1500L
     }
 }
