@@ -1,0 +1,52 @@
+package org.app.inflo.core.data.models
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class UserAppModel {
+
+    abstract val id: String
+
+    @Serializable
+    data class Creator(
+        override val id: String,
+        val mobileNumber: String,
+        val firstName: String,
+        val lastName: String,
+        val dob: Long,
+        val categories: List<ContentCategory>,
+    ) : UserAppModel()
+
+    @Serializable
+    data class Brand(
+        override val id: String
+    ) : UserAppModel()
+}
+
+@Serializable
+sealed class OnboardedUser {
+
+    abstract val id: String
+
+    @Serializable
+    data class Creator(
+        override val id: String,
+        val mobileNumber: String,
+        val firstName: String?,
+        val lastName: String?,
+        val dob: Long?,
+        val categories: List<ContentCategory>?,
+    ) : OnboardedUser()
+
+    @Serializable
+    data class Brand(
+        override val id: String
+    ) : OnboardedUser()
+
+}
+
+@Serializable
+data class ContentCategory(
+    val id: String,
+    val name: String
+)

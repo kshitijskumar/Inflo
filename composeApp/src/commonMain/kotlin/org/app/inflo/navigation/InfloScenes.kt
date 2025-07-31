@@ -6,14 +6,18 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import moe.tlaster.precompose.navigation.BackStackEntry
 import moe.tlaster.precompose.navigation.query
+import org.app.inflo.navigation.args.HomeArgs
 import org.app.inflo.navigation.args.LoginArgs
+import org.app.inflo.navigation.args.OnboardingArgs
 import org.app.inflo.navigation.args.SceneArgs
 import org.app.inflo.navigation.args.SplashArgs
 import org.app.inflo.utils.AppJson
 
 enum class InfloScenes(val baseRoute: String) {
     Splash("/splash"),
-    Login("/login");
+    Login("/login"),
+    Home("/home"),
+    Onboarding("/onboarding");
 
     companion object {
         const val ARGS = "args"

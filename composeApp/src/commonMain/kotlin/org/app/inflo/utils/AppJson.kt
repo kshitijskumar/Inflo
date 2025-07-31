@@ -15,3 +15,11 @@ val AppJson = Json {
     // otherwise only those values are serialized which are passed during model creation.
     encodeDefaults = true
 }
+
+inline fun <reified T>Json.decodeFromStringSafely(str: String): T? {
+    return try {
+        this.decodeFromString(str)
+    } catch (e: Exception) {
+        null
+    }
+}
