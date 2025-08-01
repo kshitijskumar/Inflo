@@ -1,15 +1,21 @@
 package org.app.inflo.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,19 +24,30 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inflo.composeapp.generated.resources.Res
 import inflo.composeapp.generated.resources.ic_inflo
+import inflo.composeapp.generated.resources.app_name
+import inflo.composeapp.generated.resources.ic_inflo_secondary
+import inflo.composeapp.generated.resources.profile_selection_subtitle
+import inflo.composeapp.generated.resources.profile_type_creator
+import inflo.composeapp.generated.resources.profile_type_brand
 import moe.tlaster.precompose.stateholder.LocalStateHolder
 import org.app.inflo.core.theme.AppTheme
+import org.app.inflo.core.ui.AppPrimaryButton
+import org.app.inflo.core.ui.AppSecondaryButton
 import org.app.inflo.core.viewmodel.ViewModelFactory
 import org.app.inflo.screens.splash.ProfileType
 import org.app.inflo.screens.splash.SplashIntent
 import org.app.inflo.screens.splash.SplashScreenType
 import org.app.inflo.screens.splash.SplashViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SplashScreen(viewModel: SplashViewModel) {
@@ -43,8 +60,7 @@ fun SplashScreen(viewModel: SplashViewModel) {
     }
     
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.primary
+        modifier = Modifier.fillMaxSize()
     ) {
         when (state.screenType) {
             SplashScreenType.LOADING -> {
@@ -65,7 +81,55 @@ fun SplashScreen(viewModel: SplashViewModel) {
 fun ProfileTypeSelectionContent(
     onProfileSelected: (ProfileType) -> Unit
 ) {
-    Text("Profile selection")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.color.white)
+            .padding(horizontal = AppTheme.dimens.medium3),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(96.dp))
+
+            Image(
+                painter = painterResource(Res.drawable.ic_inflo_secondary),
+                modifier = Modifier
+                    .fillMaxWidth(0.75f),
+                contentScale = ContentScale.FillWidth,
+                contentDescription = null
+            )
+
+            Text(
+                text = stringResource(Res.string.profile_selection_subtitle),
+                color = AppTheme.color.baseRed,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = AppTheme.dimens.medium3),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        AppPrimaryButton(
+            text = stringResource(Res.string.profile_type_creator),
+            onClick = { onProfileSelected.invoke(ProfileType.CREATOR) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(AppTheme.dimens.medium1))
+
+        AppSecondaryButton(
+            text = stringResource(Res.string.profile_type_brand),
+            onClick = { onProfileSelected.invoke(ProfileType.BRAND) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(AppTheme.dimens.medium4))
+    }
 }
 
 @Composable

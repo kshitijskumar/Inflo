@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.IntOffset
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.transition.NavTransition
+import org.app.inflo.core.theme.AppTheme
 import org.app.inflo.navigation.InfloNavigationManager
 import org.app.inflo.navigation.InfloScenes
 import org.app.inflo.navigation.args.SplashArgs
@@ -29,7 +30,17 @@ import org.koin.compose.koinInject
 fun App() {
     PreComposeApp {
         KoinContext {
-            MaterialTheme {
+            MaterialTheme(
+                colorScheme = MaterialTheme.colorScheme.copy(
+                    primary = AppTheme.color.baseRed,
+                    onPrimary = AppTheme.color.white,
+                    secondary = AppTheme.color.secondaryRed,
+                    onSecondary = AppTheme.color.baseRed,
+                    primaryContainer = AppTheme.color.white,
+                    surfaceContainer = AppTheme.color.white,
+                    surface = AppTheme.color.white,
+                )
+            ) {
                 val navigationManager = koinInject<InfloNavigationManager>()
                 val infloNavigator = rememberInfloNavigator()
 
