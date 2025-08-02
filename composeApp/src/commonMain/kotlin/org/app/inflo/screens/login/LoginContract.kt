@@ -12,7 +12,7 @@ data class LoginState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val screenType: LoginScreenType = LoginScreenType.PHONE_NUMBER,
-    val otpCode: RequestOtpResponseAppModel? = null
+    val otpCode: RequestOtpResponseAppModel? = null,
 )
 
 enum class LoginScreenType {
@@ -27,6 +27,12 @@ sealed class LoginIntent {
     data class PhoneNumberEnteredIntent(val number: String) : LoginIntent()
 
     object OnGetOtpClickedIntent : LoginIntent()
+
+    data class OnOtpEnteredIntent(val otp: String) : LoginIntent()
+
+    data object SubmitOtpIntent : LoginIntent()
+
+    data object BackClickedIntent : LoginIntent()
 
 }
 

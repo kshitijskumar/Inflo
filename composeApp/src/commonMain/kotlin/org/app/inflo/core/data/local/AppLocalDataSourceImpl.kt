@@ -5,8 +5,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
+import org.app.inflo.core.data.models.AppUserStatus
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.utils.AppJson
@@ -36,7 +38,17 @@ class AppLocalDataSourceImpl(
             }
         }
     }
-    
+
+    override fun userStatus(): Flow<AppUserStatus> {
+        return combine(storedUser(), onboardedUser()) { user, onboarded ->
+            when {
+                user != null -> AppUserStatus.LoggedIn(user)
+                onboarded != null -> AppUserStatus.Onboarded(onboarded)
+                else -> AppUserStatus.NotLoggedIn
+            }
+        }
+    }
+
     override suspend fun storeUser(user: UserAppModel) {
         dataStore.edit { preferences ->
             // Store user and clear onboarded user since only one can exist
