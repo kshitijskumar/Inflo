@@ -6,12 +6,17 @@ import org.app.inflo.core.domain.ValidatePhoneNumberUseCase
 import org.app.inflo.core.domain.ValidationResult
 import org.app.inflo.core.viewmodel.AppBaseViewModel
 import org.app.inflo.navigation.InfloNavigationManager
+import org.app.inflo.navigation.InfloNavOptions
+import org.app.inflo.navigation.PopUpToConfig
+import org.app.inflo.navigation.args.HomeArgs
 import org.app.inflo.navigation.args.LoginArgs
+import org.app.inflo.navigation.args.OnboardingArgs
 import org.app.inflo.navigation.goBack
+import org.app.inflo.navigation.navigate
+import org.app.inflo.screens.login.domain.LoginResult
 import org.app.inflo.screens.login.domain.RequestOtpUseCase
 import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginUseCase
-import org.app.inflo.screens.login.domain.LoginResult
 
 class LoginViewModel(
     private val args: LoginArgs,
@@ -159,7 +164,13 @@ class LoginViewModel(
                             error = null
                         )
                     }
-                    // TODO: Navigate to main screen for existing user
+                    // Navigate to home screen clearing the entire backstack
+                    navigationManager.navigate(
+                        args = HomeArgs,
+                        navOptions = InfloNavOptions(
+                            popUpToConfig = PopUpToConfig.ClearAll()
+                        )
+                    )
                 }
                 is LoginResult.NewUser -> {
                     updateState { state ->
@@ -168,7 +179,13 @@ class LoginViewModel(
                             error = null
                         )
                     }
-                    // TODO: Navigate to onboarding screen for new user
+                    // Navigate to onboarding screen clearing the entire backstack
+                    navigationManager.navigate(
+                        args = OnboardingArgs,
+                        navOptions = InfloNavOptions(
+                            popUpToConfig = PopUpToConfig.ClearAll()
+                        )
+                    )
                 }
                 is LoginResult.InvalidOtp -> {
                     updateState { state ->

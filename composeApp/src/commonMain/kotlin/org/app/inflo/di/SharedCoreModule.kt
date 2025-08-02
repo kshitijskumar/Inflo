@@ -45,7 +45,15 @@ private fun commonModule() = module {
     
     // ViewModels
     factoryOf(::SplashViewModel)
-    factoryOf(::LoginViewModel)
+    factory {
+        LoginViewModel(
+            args = it.get(),
+            validatePhoneNumberUseCase = get(),
+            requestOtpUseCase = get(),
+            verifyLoginUseCase = get(),
+            navigationManager = get()
+        )
+    }
     
     // Use Cases
     factoryOf(::ValidatePhoneNumberUseCase)
