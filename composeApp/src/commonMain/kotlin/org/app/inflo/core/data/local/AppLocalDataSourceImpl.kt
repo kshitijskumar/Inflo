@@ -2,9 +2,11 @@ package org.app.inflo.core.data.local
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.utils.AppJson
@@ -32,6 +34,29 @@ class AppLocalDataSourceImpl(
             onboardedUserJson?.let {
                 AppJson.decodeFromStringSafely<OnboardedUser>(it)
             }
+        }
+    }
+    
+    override suspend fun storeUser(user: UserAppModel) {
+        dataStore.edit { preferences ->
+            // Store user and clear onboarded user since only one can exist
+            preferences[userKey] = AppJson.encodeToString(user)
+            preferences.remove(onboardedUserKey)
+        }
+    }
+    
+    override suspend fun storeOnboardedUser(onboardedUser: OnboardedUser) {
+        dataStore.edit { preferences ->
+            // Store onboarded user and clear regular user since only one can exist
+            preferences[onboardedUserKey] = AppJson.encodeToString(onboardedUser)
+            preferences.remove(userKey)
+        }
+    }
+    
+    override suspend fun clearAllUserData() {
+        dataStore.edit { preferences ->
+            preferences.remove(userKey)
+            preferences.remove(onboardedUserKey)
         }
     }
 }

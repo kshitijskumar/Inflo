@@ -9,5 +9,11 @@ interface AppLocalDataSource {
     fun storedUser(): Flow<UserAppModel?>
     
     fun onboardedUser(): Flow<OnboardedUser?>
+    
+    suspend fun storeUser(user: UserAppModel)
+    
+    suspend fun storeOnboardedUser(onboardedUser: OnboardedUser)
+    
+    suspend fun clearAllUserData()
 
 }

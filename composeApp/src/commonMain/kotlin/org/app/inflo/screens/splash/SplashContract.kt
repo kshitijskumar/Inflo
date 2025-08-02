@@ -12,7 +12,17 @@ enum class SplashScreenType {
 
 enum class ProfileType {
     CREATOR,
-    BRAND
+    BRAND;
+
+    companion object {
+        fun safeValueOf(str: String): ProfileType? {
+            return try {
+                ProfileType.valueOf(str)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
 }
 
 sealed class SplashIntent {

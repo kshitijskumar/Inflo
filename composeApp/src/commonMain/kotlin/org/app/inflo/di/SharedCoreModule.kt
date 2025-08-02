@@ -7,8 +7,14 @@ import org.app.inflo.core.data.repository.AppRepository
 import org.app.inflo.core.data.repository.AppRepositoryImpl
 import org.app.inflo.core.data.local.AppLocalDataSource
 import org.app.inflo.core.data.local.AppLocalDataSourceImpl
+import org.app.inflo.core.data.remote.AppRemoteDataSource
+import org.app.inflo.core.data.remote.AppRemoteDataSourceImpl
+import org.app.inflo.core.domain.ValidatePhoneNumberUseCase
 import org.app.inflo.navigation.InfloNavigationManager
 import org.app.inflo.navigation.InfloNavigationManagerImpl
+import org.app.inflo.screens.login.LoginViewModel
+import org.app.inflo.screens.login.domain.RequestOtpUseCase
+import org.app.inflo.screens.login.domain.VerifyLoginUseCase
 import org.app.inflo.screens.splash.SplashViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -35,11 +41,16 @@ private fun commonModule() = module {
         )
     }
     
+    factoryOf(::AppRemoteDataSourceImpl) { bind<AppRemoteDataSource>() }
+    
     // ViewModels
     factoryOf(::SplashViewModel)
+    factoryOf(::LoginViewModel)
     
-    // Remote data source will be provided when network module is added
-    // factory<AppRemoteDataSource> { ... }
+    // Use Cases
+    factoryOf(::ValidatePhoneNumberUseCase)
+    factoryOf(::RequestOtpUseCase)
+    factoryOf(::VerifyLoginUseCase)
 }
 
 internal expect fun platformModule(): Module 
