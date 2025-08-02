@@ -50,7 +50,7 @@ class LoginViewModel(
 
     private fun handlePhoneNumberEnteredIntent(intent: LoginIntent.PhoneNumberEnteredIntent) {
         val phoneNumber = intent.number.trim()
-        val validationResult = validatePhoneNumberUseCase(phoneNumber)
+        val validationResult = validatePhoneNumberUseCase.invoke(phoneNumber)
         val error: String?
         val shouldEnableGetOtp: Boolean
 
@@ -61,7 +61,7 @@ class LoginViewModel(
             }
             ValidationResult.Success -> {
                 error = null
-                shouldEnableGetOtp = true
+                shouldEnableGetOtp = phoneNumber.length == 10
             }
         }
         

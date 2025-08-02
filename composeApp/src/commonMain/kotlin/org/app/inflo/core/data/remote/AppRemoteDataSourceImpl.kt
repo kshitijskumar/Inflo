@@ -8,7 +8,9 @@ import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginResponseApiModel
 import org.app.inflo.screens.login.exception.RequestOtpFailedException
 import org.app.inflo.screens.login.exception.VerifyLoginFailedException
+import org.app.inflo.screens.splash.ProfileType
 import org.app.inflo.utils.AppSystem
+import org.app.inflo.utils.ServerErrorCodes
 
 class AppRemoteDataSourceImpl : AppRemoteDataSource {
     
@@ -43,17 +45,18 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
         // Mock logic for different scenarios
         when {
             request.code == "000000" -> {
-                throw VerifyLoginFailedException("Invalid OTP entered")
+                throw VerifyLoginFailedException(ServerErrorCodes.LOGIN_INVALID_OTP, "Invalid OTP entered")
             }
             request.code == "111111" -> {
-                throw VerifyLoginFailedException("OTP has expired")
+                throw VerifyLoginFailedException(ServerErrorCodes.LOGIN_OTP_EXPIRED, "OTP has expired")
             }
             request.code == "999999" -> {
-                throw VerifyLoginFailedException("Server error occurred")
+                throw VerifyLoginFailedException(0, "Server error occurred")
             }
             request.phoneNumber.startsWith("8888") -> {
                 // Mock existing user
                 return VerifyLoginResponseApiModel(
+                    profileType = ProfileType.CREATOR.name,
                     id = "user_123",
                     mobileNumber = request.phoneNumber,
                     firstName = "John",
@@ -69,6 +72,7 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
             else -> {
                 // Mock new user (minimal details)
                 return VerifyLoginResponseApiModel(
+                    profileType = ProfileType.CREATOR.name,
                     id = "new_user_${AppSystem.currentTimeInMillis()}",
                     mobileNumber = request.phoneNumber,
                     firstName = null,

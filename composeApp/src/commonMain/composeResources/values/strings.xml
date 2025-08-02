@@ -4,4 +4,8 @@
     <string name="profile_selection_subtitle">Brand-creator collaborations\nmade easy</string>
     <string name="profile_type_creator">I'm a creator</string>
     <string name="profile_type_brand">I'm a brand</string>
+    <string name="enter_phone_number">Enter your phone number</string>
+    <string name="phone_number_subtitle">Use your phone number to sign in</string>
+    <string name="get_otp">Get OTP</string>
+    <string name="clear">Clear</string>
 </resources> 
