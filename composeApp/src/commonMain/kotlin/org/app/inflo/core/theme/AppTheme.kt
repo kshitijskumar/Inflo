@@ -18,7 +18,8 @@ data class AppColor(
     val black: Color = Color(0xFF000000),
     val black40: Color = Color(0xFF000000).copy(alpha = 0.4f),
     val black60: Color = Color(0xFF000000).copy(alpha = 0.6f),
-    val background: Color = Color(0xFFFAFAFF)
+    val background: Color = Color(0xFFFAFAFF),
+    val basePurple: Color = Color(0xFF6750A4)
 )
 
 data class AppDimens(

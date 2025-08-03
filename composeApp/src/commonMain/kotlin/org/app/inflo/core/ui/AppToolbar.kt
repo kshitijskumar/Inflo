@@ -4,9 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,9 +39,10 @@ fun AppToolbar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(TopAppBarDefaults.TopAppBarExpandedHeight)
             .background(AppTheme.color.white)
-            .padding(top = AppTheme.dimens.medium1),
+            .displayCutoutPadding()
+            .statusBarsPadding()
+            .padding(vertical = AppTheme.dimens.medium1),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(

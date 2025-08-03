@@ -18,6 +18,7 @@ import org.app.inflo.screens.login.domain.RequestOtpUseCase
 import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginUseCase
 
+// TODO::KSHITIJ - handle resend otp
 class LoginViewModel(
     private val args: LoginArgs,
     private val validatePhoneNumberUseCase: ValidatePhoneNumberUseCase,
@@ -121,7 +122,7 @@ class LoginViewModel(
             currentState.copy(
                 otpEntered = otp,
                 error = validationError,
-                shouldEnableSubmit = validationError == null
+                shouldEnableSubmit = validationError == null && otp.length == 6
             )
         }
     }
@@ -137,6 +138,9 @@ class LoginViewModel(
             updateState { state ->
                 state.copy(
                     screenType = LoginScreenType.PHONE_NUMBER,
+                    otpCode = null,
+                    otpEntered = "",
+                    resentOtpIn = null,
                     error = "Phone number or OTP code not available"
                 )
             }
@@ -200,7 +204,10 @@ class LoginViewModel(
                         state.copy(
                             isLoading = false,
                             error = "OTP has expired",
-                            screenType = LoginScreenType.PHONE_NUMBER
+                            screenType = LoginScreenType.PHONE_NUMBER,
+                            otpCode = null,
+                            otpEntered = "",
+                            resentOtpIn = null
                         )
                     }
                 }
@@ -232,7 +239,10 @@ class LoginViewModel(
             LoginScreenType.OTP -> {
                 updateState {
                     it.copy(
-                        screenType = LoginScreenType.PHONE_NUMBER
+                        screenType = LoginScreenType.PHONE_NUMBER,
+                        otpEntered = "",
+                        otpCode = null,
+                        resentOtpIn = null
                     )
                 }
             }
@@ -241,7 +251,7 @@ class LoginViewModel(
 
     private fun validateOtp(otp: String): String? {
         return when {
-            otp.length != 6 -> "OTP must be exactly 6 digits"
+            otp.length > 6 -> "OTP must be exactly 6 digits"
             otp.any { !it.isDigit() } -> "OTP must contain only digits"
             else -> null
         }

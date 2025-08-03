@@ -8,4 +8,9 @@
     <string name="phone_number_subtitle">Use your phone number to sign in</string>
     <string name="get_otp">Get OTP</string>
     <string name="clear">Clear</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="otp_subtitle">Enter OTP sent to mobile number %1$s</string>
+    <string name="edit">Edit</string>
+    <string name="resend_otp">Resend OTP in %s sec</string>
+    <string name="submit">Submit</string>
 </resources> 
