@@ -99,7 +99,13 @@ fun OnboardingScreen(vm: OnboardingViewModel) {
                     )
                 }
                 OnboardingDetailsInfo.BasicBrandDetails -> {
-                    Text("brand details")
+                    BasicBrandDetailsScreen(
+                        state = state,
+                        sendIntent = vm::processIntent,
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                    )
                 }
                 is OnboardingDetailsInfo.Categories -> {
                     Text("categories")
@@ -169,6 +175,154 @@ fun OnboardingScreen(vm: OnboardingViewModel) {
                 state = datePickerState
             )
         }
+    }
+}
+
+@Composable
+fun BasicBrandDetailsScreen(
+    state: OnboardingState,
+    sendIntent: (OnboardingIntent) -> Unit,
+    modifier: Modifier
+) {
+    val onboardedUser = state.onboardedUser
+    
+    Column(
+        modifier = modifier
+            .padding(horizontal = AppTheme.dimens.medium3)
+    ) {
+        Text(
+            text = "Time for us to get to know one another!",
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.color.black60,
+            modifier = Modifier.padding(top = AppTheme.dimens.small2)
+        )
+        
+        Spacer(modifier = Modifier.height(AppTheme.dimens.medium4))
+        
+        // First name and last name fields in a row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium2)
+        ) {
+            // First name field
+            AppTextField(
+                value = (onboardedUser as? OnboardedUser.Brand)?.firstName ?: "",
+                onValueChange = { name ->
+                    sendIntent(OnboardingIntent.FirstNameEnteredIntent(name))
+                },
+                modifier = Modifier.weight(1f),
+                label = {
+                    Text(
+                        text = "First name",
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.color.black60
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = "John",
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.color.black40
+                    )
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Words
+                )
+            )
+            
+            // Last name field
+            AppTextField(
+                value = (onboardedUser as? OnboardedUser.Brand)?.lastName ?: "",
+                onValueChange = { name ->
+                    sendIntent(OnboardingIntent.LastNameEnteredIntent(name))
+                },
+                modifier = Modifier.weight(1f),
+                label = {
+                    Text(
+                        text = "Last Name",
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.color.black60
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = "Doe",
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.color.black40
+                    )
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Words
+                )
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(AppTheme.dimens.medium3))
+        
+        // Brand Name field
+        AppTextField(
+            value = (onboardedUser as? OnboardedUser.Brand)?.brandName ?: "",
+            onValueChange = { name ->
+                sendIntent(OnboardingIntent.BrandNameEnteredIntent(name))
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(
+                    text = "Brand Name",
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.color.black60
+                )
+            },
+            placeholder = {
+                Text(
+                    text = "JD Fitness",
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.color.black40
+                )
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            )
+        )
+        
+        Spacer(modifier = Modifier.height(AppTheme.dimens.medium3))
+        
+        // Brand Instagram field
+        AppTextField(
+            value = (onboardedUser as? OnboardedUser.Brand)?.brandInstagramAccountName ?: "",
+            onValueChange = { accountName ->
+                sendIntent(OnboardingIntent.InstagramAccountEnteredIntent(accountName))
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(
+                    text = "Brand Instagram",
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.color.black60
+                )
+            },
+            placeholder = {
+                Text(
+                    text = "@",
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.color.black40
+                )
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            )
+        )
     }
 }
 
