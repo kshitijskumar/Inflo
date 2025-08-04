@@ -10,11 +10,15 @@ import org.app.inflo.core.data.local.AppLocalDataSourceImpl
 import org.app.inflo.core.data.remote.AppRemoteDataSource
 import org.app.inflo.core.data.remote.AppRemoteDataSourceImpl
 import org.app.inflo.core.domain.ValidatePhoneNumberUseCase
+import org.app.inflo.core.utils.TimeUtils
+import org.app.inflo.core.utils.TimeUtilsImpl
 import org.app.inflo.navigation.InfloNavigationManager
 import org.app.inflo.navigation.InfloNavigationManagerImpl
 import org.app.inflo.screens.login.LoginViewModel
 import org.app.inflo.screens.login.domain.RequestOtpUseCase
 import org.app.inflo.screens.login.domain.VerifyLoginUseCase
+import org.app.inflo.screens.onboarding.OnboardingViewModel
+import org.app.inflo.screens.onboarding.domain.GetOnboardingDetailsUseCase
 import org.app.inflo.screens.splash.SplashViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -59,6 +63,12 @@ private fun commonModule() = module {
     factoryOf(::ValidatePhoneNumberUseCase)
     factoryOf(::RequestOtpUseCase)
     factoryOf(::VerifyLoginUseCase)
+
+    factoryOf(::OnboardingViewModel)
+    factoryOf(::GetOnboardingDetailsUseCase)
+    
+    // Utils
+    singleOf(::TimeUtilsImpl) { bind<TimeUtils>() }
 }
 
 internal expect fun platformModule(): Module 

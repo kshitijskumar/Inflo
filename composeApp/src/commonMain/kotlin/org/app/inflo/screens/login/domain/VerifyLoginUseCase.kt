@@ -58,6 +58,8 @@ data class VerifyLoginResponseApiModel(
     val firstName: String?,
     val lastName: String?,
     val dob: Long?,
+    val brandName: String?,
+    val instagramAccountName: String?,
     val categories: List<ContentCategory>?,
 )
 
@@ -92,7 +94,12 @@ fun VerifyLoginResponseApiModel.onboardedUser(): OnboardedUser? {
         }
         ProfileType.BRAND -> {
             OnboardedUser.Brand(
-                id = this.id ?: return null
+                id = this.id ?: return null,
+                mobileNumber = this.mobileNumber ?: return null,
+                firstName = this.firstName,
+                lastName = this.lastName,
+                brandName = this.brandName,
+                brandInstagramAccountName = this.instagramAccountName
             )
         }
     }

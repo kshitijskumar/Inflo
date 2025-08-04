@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import inflo.composeapp.generated.resources.Res
 import inflo.composeapp.generated.resources.ic_arrow_back
 import inflo.composeapp.generated.resources.ic_inflo_secondary
@@ -27,6 +29,7 @@ import moe.tlaster.precompose.ui.LocalBackDispatcherOwner
 import org.app.inflo.core.theme.AppTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +45,8 @@ fun AppToolbar(
             .background(AppTheme.color.white)
             .displayCutoutPadding()
             .statusBarsPadding()
-            .padding(vertical = AppTheme.dimens.medium1),
+            .padding(vertical = AppTheme.dimens.medium1)
+            .heightIn(min = 56.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(

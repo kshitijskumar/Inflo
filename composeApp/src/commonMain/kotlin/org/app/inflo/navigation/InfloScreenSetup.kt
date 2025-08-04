@@ -12,6 +12,8 @@ import org.app.inflo.navigation.args.SceneArgs
 import org.app.inflo.navigation.args.SplashArgs
 import org.app.inflo.screens.LoginScreen
 import org.app.inflo.screens.login.LoginViewModel
+import org.app.inflo.screens.onboarding.OnboardingScreen
+import org.app.inflo.screens.onboarding.OnboardingViewModel
 import org.app.inflo.screens.splash.SplashScreen
 import org.app.inflo.screens.splash.SplashViewModel
 
@@ -48,7 +50,13 @@ fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigat
         }
         InfloScenes.Onboarding -> {
             sceneWithSafeArgs<OnboardingArgs>(scene) {
-                Text("Onboarding")
+                OnboardingScreen(
+                    vm = ViewModelFactory.viewModel(
+                        vmClass = OnboardingViewModel::class,
+                        args = this,
+                        stateHolder = it
+                    )
+                )
             }
         }
     }

@@ -40,7 +40,12 @@ sealed class OnboardedUser {
 
     @Serializable
     data class Brand(
-        override val id: String
+        override val id: String,
+        val mobileNumber: String,
+        val firstName: String?,
+        val lastName: String?,
+        val brandName: String?,
+        val brandInstagramAccountName: String?
     ) : OnboardedUser()
 
 }

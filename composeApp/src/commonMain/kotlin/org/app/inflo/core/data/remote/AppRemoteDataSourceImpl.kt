@@ -62,6 +62,8 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                     firstName = "John",
                     lastName = "Doe",
                     dob = AppSystem.currentTimeInMillis() - (25 * 365 * 24 * 60 * 60 * 1000L), // 25 years ago
+                    brandName = null,
+                    instagramAccountName = null,
                     categories = listOf(
                         ContentCategory("beauty", "Beauty"),
                         ContentCategory("fitness", "Fitness"),
@@ -78,6 +80,8 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                     firstName = null,
                     lastName = null,
                     dob = null,
+                    brandName = null,
+                    instagramAccountName = null,
                     categories = null
                 )
             }

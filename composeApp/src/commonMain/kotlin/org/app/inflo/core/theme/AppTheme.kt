@@ -1,13 +1,17 @@
 package org.app.inflo.core.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 object AppTheme {
 
     val color = AppColor()
     val dimens = AppDimens()
+    val typography = AppTypography()
 
 }
 
@@ -33,4 +37,22 @@ data class AppDimens(
     val medium5: Dp = 32.dp,
     val large1: Dp = 48.dp,
     val large2: Dp = 64.dp,
+)
+
+data class AppTypography(
+    val headlineLarge: TextStyle = TextStyle(
+        fontSize = 24.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = Color.Black
+    ),
+    val bodyMedium: TextStyle = TextStyle(
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Normal,
+        color = Color.Black
+    ),
+    val bodySmall: TextStyle = TextStyle(
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Normal,
+        color = Color.Black
+    )
 )
