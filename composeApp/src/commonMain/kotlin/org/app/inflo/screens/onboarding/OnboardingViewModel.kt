@@ -39,6 +39,7 @@ class OnboardingViewModel(
             is OnboardingIntent.DobEnteredIntent -> handleDobEnteredIntent(intent)
             is OnboardingIntent.BrandNameEnteredIntent -> handleBrandNameEnteredIntent(intent)
             is OnboardingIntent.InstagramAccountEnteredIntent -> handleInstagramAccountEnteredIntent(intent)
+            is OnboardingIntent.CategoryClickedIntent -> handleCategoryClickedIntent(intent)
             OnboardingIntent.ShowDatePickerIntent -> handleShowDatePickerIntent()
             OnboardingIntent.HideDatePickerIntent -> handleHideDatePickerIntent()
         }
@@ -89,16 +90,16 @@ class OnboardingViewModel(
 
     private fun handleSubmitClickedIntent() {
         val currentState = viewState.value
-        
+
         // If the details are not filled -> return coz submit function wont be enabled anyways
         if (!currentState.shouldEnableConfirmBtn) {
             return
         }
-        
+
         val details = currentState.details ?: return
         val onboardedUser = currentState.onboardedUser ?: return
         val currentIndex = currentState.currentDetailsIndex
-        
+
         // If the current details is last index of the list, we will make an api call
         if (currentIndex == details.lastIndex) {
             // TODO: Make API call
@@ -107,7 +108,7 @@ class OnboardingViewModel(
             // If the current details is not the last index, update the current details with the next item
             val nextIndex = currentIndex + 1
             val nextDetails = details[nextIndex]
-            
+
             updateState { state ->
                 state.copy(
                     currentDetailsIndex = nextIndex,
@@ -120,7 +121,7 @@ class OnboardingViewModel(
     private fun handleFirstNameEnteredIntent(intent: OnboardingIntent.FirstNameEnteredIntent) {
         val currentState = viewState.value
         val onboardedUser = currentState.onboardedUser ?: return
-        
+
         val updatedUser = when (onboardedUser) {
             is OnboardedUser.Creator -> {
                 // Update the first name for creator and set it back in the state
@@ -143,7 +144,7 @@ class OnboardingViewModel(
     private fun handleLastNameEnteredIntent(intent: OnboardingIntent.LastNameEnteredIntent) {
         val currentState = viewState.value
         val onboardedUser = currentState.onboardedUser ?: return
-        
+
         val updatedUser = when (onboardedUser) {
             is OnboardedUser.Creator -> {
                 // Update the last name for creator and set it back in the state
@@ -166,7 +167,7 @@ class OnboardingViewModel(
     private fun handleDobEnteredIntent(intent: OnboardingIntent.DobEnteredIntent) {
         val currentState = viewState.value
         val onboardedUser = currentState.onboardedUser ?: return
-        
+
         val updatedUser = when (onboardedUser) {
             is OnboardedUser.Creator -> {
                 // Update the DOB for creator and set it back in the state
@@ -191,7 +192,7 @@ class OnboardingViewModel(
     private fun handleBrandNameEnteredIntent(intent: OnboardingIntent.BrandNameEnteredIntent) {
         val currentState = viewState.value
         val onboardedUser = currentState.onboardedUser ?: return
-        
+
         val updatedUser = when (onboardedUser) {
             is OnboardedUser.Creator -> {
                 // Creator users don't have brand name, return as-is
@@ -215,7 +216,7 @@ class OnboardingViewModel(
     private fun handleInstagramAccountEnteredIntent(intent: OnboardingIntent.InstagramAccountEnteredIntent) {
         val currentState = viewState.value
         val onboardedUser = currentState.onboardedUser ?: return
-        
+
         val updatedUser = when (onboardedUser) {
             is OnboardedUser.Creator -> {
                 // Creator users don't have Instagram account in brand context, return as-is
@@ -239,15 +240,15 @@ class OnboardingViewModel(
     private fun handleShowDatePickerIntent() {
         val currentState = viewState.value
         val onboardedUser = currentState.onboardedUser
-        
+
         // Only show date picker for Creator users
         if (onboardedUser !is OnboardedUser.Creator) {
             return
         }
-        
+
         // Get the currently selected date or use current date
         val selectedDate = onboardedUser.dob ?: AppSystem.currentTimeInMillis()
-        
+
         updateState { state ->
             state.copy(
                 showDatePicker = true,
@@ -267,7 +268,7 @@ class OnboardingViewModel(
     private fun handleBackClickedIntent() {
         val currentState = viewState.value
         val currentIndex = currentState.currentDetailsIndex
-        
+
         // If there is a possible previous details, we go back
         when {
             currentIndex > 0 -> {
@@ -287,6 +288,46 @@ class OnboardingViewModel(
                 // If there is nothing to go back, it should not do anything
             }
         }
+    }
 
+    private fun handleCategoryClickedIntent(intent: OnboardingIntent.CategoryClickedIntent) {
+        val currentState = viewState.value
+        val onboardedUser = currentState.onboardedUser
+
+        // Only handle category selection for Creator users
+        if (onboardedUser !is OnboardedUser.Creator) {
+            return
+        }
+
+        val currentCategories = onboardedUser.categories?.toMutableList() ?: mutableListOf()
+        val clickedCategory = intent.category
+
+        // Check if category is already selected
+        val existingCategoryIndex = currentCategories.indexOfFirst { it.id == clickedCategory.id }
+
+        if (existingCategoryIndex != -1) {
+            // Category is already selected, deselect it (remove it)
+            currentCategories.removeAt(existingCategoryIndex)
+        } else {
+            // Category is not selected, add it if we haven't reached max limit
+            if (currentCategories.size < MAX_CATEGORY_SELECTION_ALLOWED) {
+                currentCategories.add(clickedCategory)
+            }
+        }
+
+        // Update the user with new categories
+        val updatedUser = onboardedUser.copy(categories = currentCategories)
+
+        val currentDetails = currentState.details?.getOrNull(currentState.currentDetailsIndex)
+        updateState { state ->
+            state.copy(
+                onboardedUser = updatedUser,
+                shouldEnableConfirmBtn = currentDetails?.isDetailsFilled(updatedUser) ?: state.shouldEnableConfirmBtn
+            )
+        }
+    }
+
+    companion object {
+        const val MAX_CATEGORY_SELECTION_ALLOWED = 5
     }
 }

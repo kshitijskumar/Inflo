@@ -33,6 +33,10 @@ class GetOnboardingDetailsUseCase {
             ContentCategory("tech", "Tech"),
             ContentCategory("automobile", "Automobile"),
             ContentCategory("travel", "Travel"),
+            ContentCategory("anime", "Anime"),
+            ContentCategory("education", "Education"),
+            ContentCategory("magix", "Magix"),
+            ContentCategory("art", "Art"),
         )
     }
 

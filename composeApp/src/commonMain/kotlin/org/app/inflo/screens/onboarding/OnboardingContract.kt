@@ -1,5 +1,6 @@
 package org.app.inflo.screens.onboarding
 
+import org.app.inflo.core.data.models.ContentCategory
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.utils.AppSystem
 
@@ -28,6 +29,8 @@ sealed class OnboardingIntent {
     data class BrandNameEnteredIntent(val name: String) : OnboardingIntent()
     
     data class InstagramAccountEnteredIntent(val accountName: String) : OnboardingIntent()
+    
+    data class CategoryClickedIntent(val category: ContentCategory) : OnboardingIntent()
     
     data object ShowDatePickerIntent : OnboardingIntent()
     

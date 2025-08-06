@@ -1,11 +1,13 @@
 package org.app.inflo.screens.onboarding
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
@@ -32,10 +35,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inflo.composeapp.generated.resources.Res
 import inflo.composeapp.generated.resources.ic_arrow_back
 import kotlinx.datetime.Instant
@@ -44,6 +50,7 @@ import kotlinx.datetime.toLocalDateTime
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.BackHandler
 import org.app.inflo.core.data.models.OnboardedUser
+import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.core.theme.AppTheme
 import org.app.inflo.core.ui.AppPrimaryButton
 import org.app.inflo.core.ui.AppTextField
@@ -108,7 +115,16 @@ fun OnboardingScreen(vm: OnboardingViewModel) {
                     )
                 }
                 is OnboardingDetailsInfo.Categories -> {
-                    Text("categories")
+                    (state.onboardedUser as? OnboardedUser.Creator)?.let { user ->
+                        OnboardingCreatorCategories(
+                            user = user,
+                            screenState = detailsScreen,
+                            sendIntent = vm::processIntent,
+                            modifier = Modifier
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState())
+                        )
+                    }
                 }
                 null -> {}
             }
@@ -175,6 +191,87 @@ fun OnboardingScreen(vm: OnboardingViewModel) {
                 state = datePickerState
             )
         }
+    }
+}
+
+@Composable
+fun OnboardingCreatorCategories(
+    user: OnboardedUser.Creator,
+    screenState: OnboardingDetailsInfo.Categories,
+    sendIntent: (OnboardingIntent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .padding(horizontal = AppTheme.dimens.medium3)
+    ) {
+        Text(
+            text = "Select the categories that best define you.",
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.color.black60,
+            modifier = Modifier.padding(top = AppTheme.dimens.small2)
+        )
+
+        Spacer(modifier = Modifier.height(AppTheme.dimens.large2))
+
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium1),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.medium2)
+        ) {
+                         screenState.categories.forEach { item ->
+                 CategorySelectablePill(
+                     categoryName = item.name,
+                     isSelected = user.categories?.find { it.id == item.id } != null,
+                     onClick = { 
+                         sendIntent(OnboardingIntent.CategoryClickedIntent(item))
+                     },
+                 )
+             }
+        }
+
+        Text(
+            text = "${user.categories?.size ?: 0}/${OnboardingViewModel.MAX_CATEGORY_SELECTION_ALLOWED}",
+            color = AppTheme.color.black60,
+            fontSize = 14.sp,
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(AppTheme.dimens.medium3)
+        )
+    }
+}
+
+@Composable
+fun CategorySelectablePill(
+    categoryName: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(
+                color = if (isSelected) AppTheme.color.secondaryRed else AppTheme.color.black.copy(0.05f),
+                shape = CircleShape
+            )
+            .border(
+                width = 1.dp,
+                color = if (isSelected) AppTheme.color.baseRed else AppTheme.color.black40,
+                shape = CircleShape
+            )
+            .clickable(onClick = onClick)
+            .padding(
+                horizontal = AppTheme.dimens.medium4,
+                vertical = AppTheme.dimens.medium2
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = categoryName,
+            textAlign = TextAlign.Center,
+            color = if (isSelected) AppTheme.color.baseRed else AppTheme.color.black60
+        )
     }
 }
 
