@@ -19,6 +19,7 @@ import org.app.inflo.screens.login.domain.RequestOtpUseCase
 import org.app.inflo.screens.login.domain.VerifyLoginUseCase
 import org.app.inflo.screens.onboarding.OnboardingViewModel
 import org.app.inflo.screens.onboarding.domain.GetOnboardingDetailsUseCase
+import org.app.inflo.screens.onboarding.domain.FinishOnboardingUserUseCase
 import org.app.inflo.screens.splash.SplashViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -64,9 +65,10 @@ private fun commonModule() = module {
     factoryOf(::RequestOtpUseCase)
     factoryOf(::VerifyLoginUseCase)
 
-    factoryOf(::OnboardingViewModel)
     factoryOf(::GetOnboardingDetailsUseCase)
-    
+    factoryOf(::FinishOnboardingUserUseCase)
+    factoryOf(::OnboardingViewModel)
+
     // Utils
     singleOf(::TimeUtilsImpl) { bind<TimeUtils>() }
 }

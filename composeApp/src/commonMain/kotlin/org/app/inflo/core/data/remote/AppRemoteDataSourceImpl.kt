@@ -2,6 +2,8 @@ package org.app.inflo.core.data.remote
 
 import kotlinx.coroutines.delay
 import org.app.inflo.core.data.models.ContentCategory
+import org.app.inflo.core.data.models.OnboardedUser
+import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
@@ -83,6 +85,27 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                     brandName = null,
                     instagramAccountName = null,
                     categories = null
+                )
+            }
+        }
+    }
+
+    override suspend fun finishOnboarding(onboardedUser: OnboardedUser): UserAppModel {
+        delay(1500)
+        return when(onboardedUser) {
+            is OnboardedUser.Brand -> {
+                UserAppModel.Brand(
+                    id = onboardedUser.id
+                )
+            }
+            is OnboardedUser.Creator -> {
+                UserAppModel.Creator(
+                    id = onboardedUser.id,
+                    firstName = onboardedUser.firstName ?: "",
+                    lastName = onboardedUser.lastName ?: "",
+                    mobileNumber = onboardedUser.mobileNumber,
+                    dob = onboardedUser.dob ?: -1L,
+                    categories = onboardedUser.categories ?: listOf()
                 )
             }
         }

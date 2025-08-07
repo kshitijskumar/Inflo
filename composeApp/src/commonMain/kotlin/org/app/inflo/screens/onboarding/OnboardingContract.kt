@@ -10,7 +10,8 @@ data class OnboardingState(
     val currentDetailsIndex: Int = 0,
     val shouldEnableConfirmBtn: Boolean = false,
     val showDatePicker: Boolean = false,
-    val selectedDateForPicker: Long = AppSystem.currentTimeInMillis()
+    val selectedDateForPicker: Long = AppSystem.currentTimeInMillis(),
+    val shouldShowLoading: Boolean = false
 )
 
 sealed class OnboardingIntent {

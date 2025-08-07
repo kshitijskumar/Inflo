@@ -55,6 +55,7 @@ import org.app.inflo.core.theme.AppTheme
 import org.app.inflo.core.ui.AppPrimaryButton
 import org.app.inflo.core.ui.AppTextField
 import org.app.inflo.core.ui.AppToolbar
+import org.app.inflo.core.ui.LoadingDialog
 import org.app.inflo.core.ui.appColors
 import org.app.inflo.core.utils.TimeUtils
 import org.app.inflo.utils.AppSystem
@@ -148,6 +149,10 @@ fun OnboardingScreen(vm: OnboardingViewModel) {
 
     BackHandler {
         vm.processIntent(OnboardingIntent.BackClickedIntent)
+    }
+
+    if (state.shouldShowLoading) {
+        LoadingDialog()
     }
 
     // Date Picker Dialog

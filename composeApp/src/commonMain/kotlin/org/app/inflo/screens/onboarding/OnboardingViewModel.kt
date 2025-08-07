@@ -14,10 +14,12 @@ import org.app.inflo.navigation.args.HomeArgs
 import org.app.inflo.navigation.navigate
 import org.app.inflo.navigation.args.SplashArgs
 import org.app.inflo.screens.onboarding.domain.GetOnboardingDetailsUseCase
+import org.app.inflo.screens.onboarding.domain.FinishOnboardingUserUseCase
 import org.app.inflo.utils.AppSystem
 
 class OnboardingViewModel(
     private val getOnboardingDetailsUseCase: GetOnboardingDetailsUseCase,
+    private val finishOnboardingUserUseCase: FinishOnboardingUserUseCase,
     private val repository: AppRepository,
     private val navigationManager: InfloNavigationManager
 ) : AppBaseViewModel<OnboardingIntent, OnboardingState, OnboardingEffect>() {
@@ -102,8 +104,37 @@ class OnboardingViewModel(
 
         // If the current details is last index of the list, we will make an api call
         if (currentIndex == details.lastIndex) {
-            // TODO: Make API call
-            TODO("API call implementation needed")
+            // Finish onboarding by calling the use case
+            updateState {
+                it.copy(
+                    shouldShowLoading = true
+                )
+            }
+
+            viewModelScope.launch {
+                val result = finishOnboardingUserUseCase(onboardedUser)
+                updateState {
+                    it.copy(
+                        shouldShowLoading = false
+                    )
+                }
+                result.fold(
+                    onSuccess = { userModel ->
+                        // Onboarding completed successfully, navigate to home
+                        navigationManager.navigate(
+                            args = HomeArgs,
+                            navOptions = InfloNavOptions(
+                                popUpToConfig = PopUpToConfig.ClearAll()
+                            )
+                        )
+                    },
+                    onFailure = { exception ->
+                        // Handle error - could show error message or retry
+                        // For now, just log the error
+                        println("Onboarding failed: ${exception.message}")
+                    }
+                )
+            }
         } else {
             // If the current details is not the last index, update the current details with the next item
             val nextIndex = currentIndex + 1

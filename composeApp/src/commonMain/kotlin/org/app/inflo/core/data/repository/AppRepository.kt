@@ -25,6 +25,8 @@ interface AppRepository {
     
     suspend fun storeOnboardedUser(onboardedUser: OnboardedUser)
     
+    suspend fun finishOnboarding(onboardedUser: OnboardedUser): UserAppModel
+
     suspend fun clearAllUserData()
 
 }
