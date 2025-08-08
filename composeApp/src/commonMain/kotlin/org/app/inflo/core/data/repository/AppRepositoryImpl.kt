@@ -55,7 +55,7 @@ class AppRepositoryImpl(
         localDataSource.clearAllUserData()
     }
     
-    override suspend fun finishOnboarding(onboardedUser: OnboardedUser): UserAppModel {
+    override suspend fun finishOnboarding(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel {
         // Call backend API to finish onboarding
         val userModel = remoteDataSource.finishOnboarding(onboardedUser)
         return userModel

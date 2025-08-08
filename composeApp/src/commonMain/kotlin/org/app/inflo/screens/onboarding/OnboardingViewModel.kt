@@ -13,8 +13,10 @@ import org.app.inflo.navigation.InfloNavOptions
 import org.app.inflo.navigation.args.HomeArgs
 import org.app.inflo.navigation.navigate
 import org.app.inflo.navigation.args.SplashArgs
+import org.app.inflo.navigation.args.VerificationPendingArgs
 import org.app.inflo.screens.onboarding.domain.GetOnboardingDetailsUseCase
 import org.app.inflo.screens.onboarding.domain.FinishOnboardingUserUseCase
+import org.app.inflo.screens.onboarding.domain.OnboardingResultStatus
 import org.app.inflo.utils.AppSystem
 
 class OnboardingViewModel(
@@ -112,28 +114,32 @@ class OnboardingViewModel(
             }
 
             viewModelScope.launch {
-                val result = finishOnboardingUserUseCase(onboardedUser)
+                val result = finishOnboardingUserUseCase.invoke(onboardedUser)
                 updateState {
                     it.copy(
                         shouldShowLoading = false
                     )
                 }
-                result.fold(
-                    onSuccess = { userModel ->
-                        // Onboarding completed successfully, navigate to home
+                when(result) {
+                    is OnboardingResultStatus.Complete -> {
                         navigationManager.navigate(
                             args = HomeArgs,
                             navOptions = InfloNavOptions(
                                 popUpToConfig = PopUpToConfig.ClearAll()
                             )
                         )
-                    },
-                    onFailure = { exception ->
-                        // Handle error - could show error message or retry
-                        // For now, just log the error
-                        println("Onboarding failed: ${exception.message}")
                     }
-                )
+                    is OnboardingResultStatus.VerificationPending -> {
+                        navigationManager.navigate(
+                            args = VerificationPendingArgs,
+                            navOptions = InfloNavOptions(
+                                popUpToConfig = PopUpToConfig.ClearAll()
+                            )
+                        )
+                    }
+                    OnboardingResultStatus.GeneralError -> TODO()
+                    OnboardingResultStatus.InvalidResponse -> TODO()
+                }
             }
         } else {
             // If the current details is not the last index, update the current details with the next item

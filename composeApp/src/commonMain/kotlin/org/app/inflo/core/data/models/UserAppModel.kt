@@ -36,6 +36,7 @@ sealed class OnboardedUser {
         val lastName: String?,
         val dob: Long?,
         val categories: List<ContentCategory>?,
+        val verificationStatus: ProfileVerificationStatus
     ) : OnboardedUser()
 
     @Serializable
@@ -55,3 +56,19 @@ data class ContentCategory(
     val id: String,
     val name: String
 )
+
+enum class ProfileVerificationStatus {
+    NOT_SUBMITTED,
+    VERIFIED,
+    VERIFICATION_PENDING;
+
+    companion object {
+        fun safeValueOf(str: String): ProfileVerificationStatus? {
+            return try {
+                ProfileVerificationStatus.valueOf(str)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+}

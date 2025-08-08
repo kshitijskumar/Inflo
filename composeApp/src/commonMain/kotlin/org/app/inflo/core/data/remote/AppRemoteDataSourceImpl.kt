@@ -3,6 +3,7 @@ package org.app.inflo.core.data.remote
 import kotlinx.coroutines.delay
 import org.app.inflo.core.data.models.ContentCategory
 import org.app.inflo.core.data.models.OnboardedUser
+import org.app.inflo.core.data.models.ProfileVerificationStatus
 import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
@@ -70,7 +71,8 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                         ContentCategory("beauty", "Beauty"),
                         ContentCategory("fitness", "Fitness"),
                         ContentCategory("automobile", "Automobile"),
-                    )
+                    ),
+                    profileVerificationStatus = ProfileVerificationStatus.VERIFIED.name
                 )
             }
             else -> {
@@ -84,28 +86,42 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                     dob = null,
                     brandName = null,
                     instagramAccountName = null,
-                    categories = null
+                    categories = null,
+                    profileVerificationStatus = ProfileVerificationStatus.VERIFICATION_PENDING.name
                 )
             }
         }
     }
 
-    override suspend fun finishOnboarding(onboardedUser: OnboardedUser): UserAppModel {
+    override suspend fun finishOnboarding(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel {
         delay(1500)
         return when(onboardedUser) {
             is OnboardedUser.Brand -> {
-                UserAppModel.Brand(
-                    id = onboardedUser.id
+                VerifyLoginResponseApiModel(
+                    id = onboardedUser.id,
+                    firstName = onboardedUser.firstName ?: "",
+                    lastName = onboardedUser.lastName ?: "",
+                    mobileNumber = onboardedUser.mobileNumber,
+                    dob = -1L,
+                    categories = null,
+                    profileVerificationStatus = ProfileVerificationStatus.VERIFICATION_PENDING.name,
+                    profileType = ProfileType.CREATOR.name,
+                    instagramAccountName = null,
+                    brandName = null
                 )
             }
             is OnboardedUser.Creator -> {
-                UserAppModel.Creator(
+                VerifyLoginResponseApiModel(
                     id = onboardedUser.id,
                     firstName = onboardedUser.firstName ?: "",
                     lastName = onboardedUser.lastName ?: "",
                     mobileNumber = onboardedUser.mobileNumber,
                     dob = onboardedUser.dob ?: -1L,
-                    categories = onboardedUser.categories ?: listOf()
+                    categories = onboardedUser.categories ?: listOf(),
+                    profileVerificationStatus = ProfileVerificationStatus.VERIFICATION_PENDING.name,
+                    profileType = ProfileType.CREATOR.name,
+                    instagramAccountName = null,
+                    brandName = null
                 )
             }
         }

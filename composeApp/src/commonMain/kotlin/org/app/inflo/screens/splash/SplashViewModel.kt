@@ -4,6 +4,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import org.app.inflo.core.data.models.OnboardedUser
+import org.app.inflo.core.data.models.ProfileVerificationStatus
 import org.app.inflo.core.data.repository.AppRepository
 import org.app.inflo.core.viewmodel.AppBaseViewModel
 import org.app.inflo.navigation.InfloNavigationManager
@@ -12,6 +14,7 @@ import org.app.inflo.navigation.PopUpToConfig
 import org.app.inflo.navigation.args.HomeArgs
 import org.app.inflo.navigation.args.LoginArgs
 import org.app.inflo.navigation.args.OnboardingArgs
+import org.app.inflo.navigation.args.VerificationPendingArgs
 import org.app.inflo.navigation.navigate
 
 class SplashViewModel(
@@ -48,12 +51,38 @@ class SplashViewModel(
         val onboardedUser = repository.onboardedUser().firstOrNull()
         if (onboardedUser != null) {
             // Case 2: User is onboarded but not logged in - navigate to onboarding flow
-            navigationManager.navigate(
-                args = OnboardingArgs,
-                navOptions = InfloNavOptions(
-                    popUpToConfig = PopUpToConfig.ClearAll()
-                )
-            )
+            when(onboardedUser) {
+                is OnboardedUser.Brand -> {
+                    navigationManager.navigate(
+                        args = OnboardingArgs,
+                        navOptions = InfloNavOptions(
+                            popUpToConfig = PopUpToConfig.ClearAll()
+                        )
+                    )
+                }
+                is OnboardedUser.Creator -> {
+                    when(onboardedUser.verificationStatus) {
+                        ProfileVerificationStatus.NOT_SUBMITTED -> {
+                            navigationManager.navigate(
+                                args = OnboardingArgs,
+                                navOptions = InfloNavOptions(
+                                    popUpToConfig = PopUpToConfig.ClearAll()
+                                )
+                            )
+                        }
+                        ProfileVerificationStatus.VERIFIED, // this is not supposed to happen, but if it does navigate to verification pending
+                            // screen, it will handle accordingly
+                        ProfileVerificationStatus.VERIFICATION_PENDING -> {
+                            navigationManager.navigate(
+                                args = VerificationPendingArgs,
+                                navOptions = InfloNavOptions(
+                                    popUpToConfig = PopUpToConfig.ClearAll()
+                                )
+                            )
+                        }
+                    }
+                }
+            }
             return@launch
         }
         

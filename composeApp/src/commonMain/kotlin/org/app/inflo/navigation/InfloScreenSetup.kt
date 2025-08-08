@@ -59,6 +59,12 @@ fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigat
                 )
             }
         }
+
+        InfloScenes.VerificationPending -> {
+            scene(scene.baseRoute) {
+                Text("Verification pending")
+            }
+        }
     }
 }
 

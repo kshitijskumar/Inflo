@@ -17,6 +17,7 @@ enum class InfloScenes(val baseRoute: String) {
     Splash("/splash"),
     Login("/login"),
     Home("/home"),
+    VerificationPending("/verificationPending"),
     Onboarding("/onboarding");
 
     companion object {

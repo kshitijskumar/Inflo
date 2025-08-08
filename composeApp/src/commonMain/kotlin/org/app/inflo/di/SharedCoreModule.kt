@@ -20,6 +20,7 @@ import org.app.inflo.screens.login.domain.VerifyLoginUseCase
 import org.app.inflo.screens.onboarding.OnboardingViewModel
 import org.app.inflo.screens.onboarding.domain.GetOnboardingDetailsUseCase
 import org.app.inflo.screens.onboarding.domain.FinishOnboardingUserUseCase
+import org.app.inflo.screens.onboarding.domain.ParseUserResponseToProfileUseCase
 import org.app.inflo.screens.splash.SplashViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -64,6 +65,7 @@ private fun commonModule() = module {
     factoryOf(::ValidatePhoneNumberUseCase)
     factoryOf(::RequestOtpUseCase)
     factoryOf(::VerifyLoginUseCase)
+    factoryOf(::ParseUserResponseToProfileUseCase)
 
     factoryOf(::GetOnboardingDetailsUseCase)
     factoryOf(::FinishOnboardingUserUseCase)
