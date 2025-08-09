@@ -2,8 +2,12 @@ package org.app.inflo.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import org.app.inflo.core.data.local.AppLocalDataSource
+import org.app.inflo.core.data.models.CampaignDisplayDataAppModel
+import org.app.inflo.core.data.models.CampaignFetchResponseAppModel
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
+import org.app.inflo.core.data.models.toAppModel
+import org.app.inflo.core.data.models.toAppModelOrNull
 import org.app.inflo.core.data.remote.AppRemoteDataSource
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
@@ -65,5 +69,9 @@ class AppRepositoryImpl(
         // Call backend API to update verification status
         val userModel = remoteDataSource.updateUserVerificationStatus(onboardedUser)
         return userModel
+    }
+    
+    override suspend fun fetchCampaignFeed(creatorId: String, page: Int): CampaignFetchResponseAppModel {
+        return remoteDataSource.fetchCampaignFeed(creatorId, page).toAppModel()
     }
 }

@@ -9,6 +9,7 @@ import org.app.inflo.core.data.local.AppLocalDataSource
 import org.app.inflo.core.data.local.AppLocalDataSourceImpl
 import org.app.inflo.core.data.remote.AppRemoteDataSource
 import org.app.inflo.core.data.remote.AppRemoteDataSourceImpl
+import org.app.inflo.core.domain.FetchCampaignFeedUseCase
 import org.app.inflo.core.domain.ValidatePhoneNumberUseCase
 import org.app.inflo.core.utils.TimeUtils
 import org.app.inflo.core.utils.TimeUtilsImpl
@@ -74,6 +75,7 @@ private fun commonModule() = module {
     factoryOf(::OnboardingViewModel)
     factoryOf(::VerificationPendingViewModel)
     factoryOf(::UpdateUserVerificationStatusUseCase)
+    factoryOf(::FetchCampaignFeedUseCase)
 
     // Utils
     singleOf(::TimeUtilsImpl) { bind<TimeUtils>() }

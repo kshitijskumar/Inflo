@@ -1,6 +1,9 @@
 package org.app.inflo.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
+import org.app.inflo.core.data.models.CampaignDisplayDataApiModel
+import org.app.inflo.core.data.models.CampaignDisplayDataAppModel
+import org.app.inflo.core.data.models.CampaignFetchResponseAppModel
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
@@ -28,6 +31,8 @@ interface AppRepository {
     suspend fun finishOnboarding(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel
 
     suspend fun updateUserVerificationStatus(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel
+
+    suspend fun fetchCampaignFeed(creatorId: String, page: Int): CampaignFetchResponseAppModel
 
     suspend fun clearAllUserData()
 

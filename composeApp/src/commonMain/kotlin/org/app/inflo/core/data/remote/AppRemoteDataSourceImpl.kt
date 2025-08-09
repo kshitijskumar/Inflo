@@ -1,10 +1,12 @@
 package org.app.inflo.core.data.remote
 
 import kotlinx.coroutines.delay
+import org.app.inflo.core.data.models.CampaignDisplayDataApiModel
+import org.app.inflo.core.data.models.CampaignFetchResponseApiModel
+import org.app.inflo.core.data.models.CampaignRequirements
 import org.app.inflo.core.data.models.ContentCategory
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.ProfileVerificationStatus
-import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
@@ -161,5 +163,71 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                 )
             }
         }
+    }
+    
+    override suspend fun fetchCampaignFeed(creatorId: String, page: Int): CampaignFetchResponseApiModel {
+        delay(1000) // Simulate network delay
+        
+        // Mock data generation based on page
+        val baseIndex = page * 10
+        val campaigns = mutableListOf<CampaignDisplayDataApiModel>()
+        
+        repeat(10) { index ->
+            val campaignIndex = baseIndex + index + 1
+            campaigns.add(
+                CampaignDisplayDataApiModel(
+                    campaignId = "campaign_$campaignIndex",
+                    campaignName = "Campaign $campaignIndex - ${getMockCampaignNames()[index % getMockCampaignNames().size]}",
+                    url = "https://example.com/campaign/$campaignIndex",
+                    brandId = "brand_${(campaignIndex % 5) + 1}",
+                    brandInstagramAccount = "@brand${(campaignIndex % 5) + 1}",
+                    requirements = CampaignRequirements(
+                        reels = if (campaignIndex % 3 == 0) null else (campaignIndex % 3) + 1,
+                        stories = if (campaignIndex % 4 == 0) null else (campaignIndex % 4) + 1,
+                        posts = if (campaignIndex % 2 == 0) null else (campaignIndex % 2) + 1
+                    ),
+                    repostRights = campaignIndex % 3 == 0,
+                    categories = getMockCategories().take((campaignIndex % 3) + 1),
+                    additionalRequirements = if (campaignIndex % 4 == 0) "Must tag @brand${(campaignIndex % 5) + 1} in caption" else null,
+                    campaignBriefUrl = if (campaignIndex % 3 == 0) "https://example.com/brief/$campaignIndex" else null
+                )
+            )
+        }
+        
+        return CampaignFetchResponseApiModel(
+            data = campaigns,
+            currentPage = 0,
+            isLastPage = true
+        )
+    }
+    
+    private fun getMockCampaignNames(): List<String> {
+        return listOf(
+            "Summer Collection Launch",
+            "Fitness Challenge 2024",
+            "Beauty Essentials Review",
+            "Tech Gadget Showcase",
+            "Travel Adventure Story",
+            "Sustainable Fashion",
+            "Gaming Setup Tour",
+            "Food Recipe Challenge",
+            "Art & Creativity",
+            "Lifestyle Transformation"
+        )
+    }
+    
+    private fun getMockCategories(): List<ContentCategory> {
+        return listOf(
+            ContentCategory("beauty", "Beauty"),
+            ContentCategory("fitness", "Fitness"),
+            ContentCategory("tech", "Tech"),
+            ContentCategory("automobile", "Automobile"),
+            ContentCategory("travel", "Travel"),
+            ContentCategory("anime", "Anime"),
+            ContentCategory("education", "Education"),
+            ContentCategory("art", "Art"),
+            ContentCategory("food", "Food"),
+            ContentCategory("gaming", "Gaming")
+        )
     }
 } 
