@@ -60,4 +60,10 @@ class AppRepositoryImpl(
         val userModel = remoteDataSource.finishOnboarding(onboardedUser)
         return userModel
     }
+    
+    override suspend fun updateUserVerificationStatus(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel {
+        // Call backend API to update verification status
+        val userModel = remoteDataSource.updateUserVerificationStatus(onboardedUser)
+        return userModel
+    }
 }

@@ -14,4 +14,6 @@ interface AppRemoteDataSource {
     
     suspend fun finishOnboarding(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel
 
+    suspend fun updateUserVerificationStatus(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel
+
 }

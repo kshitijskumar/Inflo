@@ -126,4 +126,40 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
             }
         }
     }
+
+    private var counter = 0
+    override suspend fun updateUserVerificationStatus(onboardedUser: OnboardedUser): VerifyLoginResponseApiModel {
+        delay(1500)
+        counter++
+        return when(onboardedUser) {
+            is OnboardedUser.Brand -> {
+                VerifyLoginResponseApiModel(
+                    id = onboardedUser.id,
+                    firstName = onboardedUser.firstName ?: "",
+                    lastName = onboardedUser.lastName ?: "",
+                    mobileNumber = onboardedUser.mobileNumber,
+                    dob = -1L,
+                    categories = null,
+                    profileVerificationStatus = null,
+                    profileType = ProfileType.BRAND.name,
+                    instagramAccountName = null,
+                    brandName = onboardedUser.brandName
+                )
+            }
+            is OnboardedUser.Creator -> {
+                VerifyLoginResponseApiModel(
+                    id = onboardedUser.id,
+                    firstName = onboardedUser.firstName ?: "",
+                    lastName = onboardedUser.lastName ?: "",
+                    mobileNumber = onboardedUser.mobileNumber,
+                    dob = onboardedUser.dob ?: -1L,
+                    categories = onboardedUser.categories ?: listOf(),
+                    profileVerificationStatus = if (counter > 3) ProfileVerificationStatus.VERIFIED.name else ProfileVerificationStatus.VERIFICATION_PENDING.name,
+                    profileType = ProfileType.CREATOR.name,
+                    instagramAccountName = null,
+                    brandName = null
+                )
+            }
+        }
+    }
 } 
