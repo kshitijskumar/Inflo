@@ -10,12 +10,15 @@ import org.app.inflo.navigation.args.LoginArgs
 import org.app.inflo.navigation.args.OnboardingArgs
 import org.app.inflo.navigation.args.SceneArgs
 import org.app.inflo.navigation.args.SplashArgs
+import org.app.inflo.navigation.args.VerificationPendingArgs
 import org.app.inflo.screens.LoginScreen
 import org.app.inflo.screens.login.LoginViewModel
 import org.app.inflo.screens.onboarding.OnboardingScreen
 import org.app.inflo.screens.onboarding.OnboardingViewModel
 import org.app.inflo.screens.splash.SplashScreen
 import org.app.inflo.screens.splash.SplashViewModel
+import org.app.inflo.screens.verificationpending.VerificationPendingScreen
+import org.app.inflo.screens.verificationpending.VerificationPendingViewModel
 
 fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigationManager) {
     when (scene) {
@@ -61,8 +64,14 @@ fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigat
         }
 
         InfloScenes.VerificationPending -> {
-            scene(scene.baseRoute) {
-                Text("Verification pending")
+            sceneWithSafeArgs<VerificationPendingArgs>(scene) {
+                VerificationPendingScreen(
+                    vm = ViewModelFactory.viewModel(
+                        vmClass = VerificationPendingViewModel::class,
+                        args = this,
+                        stateHolder = it
+                    )
+                )
             }
         }
     }

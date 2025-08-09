@@ -22,6 +22,8 @@ import org.app.inflo.screens.onboarding.domain.GetOnboardingDetailsUseCase
 import org.app.inflo.screens.onboarding.domain.FinishOnboardingUserUseCase
 import org.app.inflo.screens.onboarding.domain.ParseUserResponseToProfileUseCase
 import org.app.inflo.screens.splash.SplashViewModel
+import org.app.inflo.screens.verificationpending.VerificationPendingViewModel
+import org.app.inflo.screens.verificationpending.domain.UpdateUserVerificationStatusUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
@@ -70,6 +72,8 @@ private fun commonModule() = module {
     factoryOf(::GetOnboardingDetailsUseCase)
     factoryOf(::FinishOnboardingUserUseCase)
     factoryOf(::OnboardingViewModel)
+    factoryOf(::VerificationPendingViewModel)
+    factoryOf(::UpdateUserVerificationStatusUseCase)
 
     // Utils
     singleOf(::TimeUtilsImpl) { bind<TimeUtils>() }
