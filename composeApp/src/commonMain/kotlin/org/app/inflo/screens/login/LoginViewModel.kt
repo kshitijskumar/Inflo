@@ -168,9 +168,10 @@ class LoginViewModel(
                             error = null
                         )
                     }
+                    val args = HomeArgs.resolve() ?: return@launch // should not be null
                     // Navigate to home screen clearing the entire backstack
                     navigationManager.navigate(
-                        args = HomeArgs,
+                        args = args,
                         navOptions = InfloNavOptions(
                             popUpToConfig = PopUpToConfig.ClearAll()
                         )

@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import moe.tlaster.precompose.navigation.RouteBuilder
 import moe.tlaster.precompose.stateholder.StateHolder
+import moe.tlaster.precompose.stateholder.currentLocalStateHolder
 import org.app.inflo.core.viewmodel.ViewModelFactory
 import org.app.inflo.navigation.args.HomeArgs
 import org.app.inflo.navigation.args.LoginArgs
@@ -12,6 +13,8 @@ import org.app.inflo.navigation.args.SceneArgs
 import org.app.inflo.navigation.args.SplashArgs
 import org.app.inflo.navigation.args.VerificationPendingArgs
 import org.app.inflo.screens.LoginScreen
+import org.app.inflo.screens.home.creator.HomeCreatorScreen
+import org.app.inflo.screens.home.creator.HomeCreatorViewModel
 import org.app.inflo.screens.login.LoginViewModel
 import org.app.inflo.screens.onboarding.OnboardingScreen
 import org.app.inflo.screens.onboarding.OnboardingViewModel
@@ -48,7 +51,20 @@ fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigat
 
         InfloScenes.Home -> {
             sceneWithSafeArgs<HomeArgs>(scene) {
-                Text("Home")
+                when(this) {
+                    is HomeArgs.BrandHomeArgs -> {
+                        Text("Brand Home")
+                    }
+                    is HomeArgs.CreatorHomeArgs -> {
+                        HomeCreatorScreen(
+                            vm = ViewModelFactory.viewModel(
+                                vmClass = HomeCreatorViewModel::class,
+                                args = this,
+                                stateHolder = currentLocalStateHolder
+                            )
+                        )
+                    }
+                }
             }
         }
         InfloScenes.Onboarding -> {

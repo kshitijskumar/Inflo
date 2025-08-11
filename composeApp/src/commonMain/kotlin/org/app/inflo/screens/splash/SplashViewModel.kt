@@ -39,7 +39,7 @@ class SplashViewModel(
         if (loggedInUser != null) {
             // Case 1: User is logged in - navigate to home screen
             navigationManager.navigate(
-                args = HomeArgs,
+                args = HomeArgs.resolve() ?: return@launch,
                 navOptions = InfloNavOptions(
                     popUpToConfig = PopUpToConfig.ClearAll()
                 )

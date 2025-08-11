@@ -92,7 +92,7 @@ class VerificationPendingViewModel(
                 is VerificationStatusUpdateResult.Complete -> {
                     // User is now verified, navigate to home
                     navigationManager.navigate(
-                        args = HomeArgs,
+                        args = HomeArgs.resolve() ?: return@launch,
                         navOptions = InfloNavOptions(
                             popUpToConfig = PopUpToConfig.ClearAll()
                         )

@@ -70,8 +70,9 @@ class OnboardingViewModel(
 
             if (details.isEmpty()) {
                 // Clear stack and navigate to splash screen
+                val args = HomeArgs.resolve() ?: return@launch // shouldnt be null
                 navigationManager.navigate(
-                    args = HomeArgs,
+                    args = args,
                     navOptions = InfloNavOptions(
                         popUpToConfig = PopUpToConfig.ClearAll()
                     )
@@ -123,7 +124,7 @@ class OnboardingViewModel(
                 when(result) {
                     is OnboardingResultStatus.Complete -> {
                         navigationManager.navigate(
-                            args = HomeArgs,
+                            args = HomeArgs.resolve() ?: return@launch,
                             navOptions = InfloNavOptions(
                                 popUpToConfig = PopUpToConfig.ClearAll()
                             )

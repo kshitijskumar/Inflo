@@ -15,6 +15,8 @@ import org.app.inflo.core.utils.TimeUtils
 import org.app.inflo.core.utils.TimeUtilsImpl
 import org.app.inflo.navigation.InfloNavigationManager
 import org.app.inflo.navigation.InfloNavigationManagerImpl
+import org.app.inflo.navigation.args.HomeArgsResolver
+import org.app.inflo.screens.home.creator.HomeCreatorViewModel
 import org.app.inflo.screens.login.LoginViewModel
 import org.app.inflo.screens.login.domain.RequestOtpUseCase
 import org.app.inflo.screens.login.domain.VerifyLoginUseCase
@@ -76,9 +78,12 @@ private fun commonModule() = module {
     factoryOf(::VerificationPendingViewModel)
     factoryOf(::UpdateUserVerificationStatusUseCase)
     factoryOf(::FetchCampaignFeedUseCase)
+    factoryOf(::HomeArgsResolver)
 
     // Utils
     singleOf(::TimeUtilsImpl) { bind<TimeUtils>() }
+
+    factoryOf(::HomeCreatorViewModel)
 }
 
 internal expect fun platformModule(): Module 
