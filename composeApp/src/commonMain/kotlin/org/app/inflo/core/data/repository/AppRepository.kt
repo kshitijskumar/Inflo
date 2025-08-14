@@ -11,6 +11,7 @@ import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseAppModel
 import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginResponseApiModel
+import org.app.inflo.db.CampaignActionType
 
 interface AppRepository {
 
@@ -36,4 +37,11 @@ interface AppRepository {
 
     suspend fun clearAllUserData()
 
+    // Campaign decisions
+    suspend fun recordCampaignDecision(
+        userId: String,
+        campaignId: String,
+        action: CampaignActionType,
+        updatedAt: Long
+    )
 }

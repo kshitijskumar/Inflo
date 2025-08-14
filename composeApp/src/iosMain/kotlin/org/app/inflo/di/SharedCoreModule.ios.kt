@@ -8,6 +8,8 @@ import org.app.inflo.utils.DataStorePathHelper
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.app.inflo.db.DatabaseDriverFactory
+import app.cash.sqldelight.db.SqlDriver
 
 internal actual fun platformModule(): Module = module {
     // DataStore for app preferences
@@ -16,4 +18,7 @@ internal actual fun platformModule(): Module = module {
             produceFile = { DataStorePathHelper.producePath(DataStoreConstants.APP_DATA_STORE) }
         )
     }
+
+    // SQLDelight Native driver
+    single<SqlDriver> { DatabaseDriverFactory().createDriver() }
 } 

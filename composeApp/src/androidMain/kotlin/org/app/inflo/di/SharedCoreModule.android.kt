@@ -9,6 +9,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.app.inflo.db.DatabaseDriverFactory
+import app.cash.sqldelight.db.SqlDriver
 
 internal actual fun platformModule(): Module = module {
     // DataStore for app preferences
@@ -17,4 +19,7 @@ internal actual fun platformModule(): Module = module {
             produceFile = { androidContext().productPath(DataStoreConstants.APP_DATA_STORE) }
         )
     }
+
+    // SQLDelight Android driver
+    single<SqlDriver> { DatabaseDriverFactory(androidContext()).createDriver() }
 } 

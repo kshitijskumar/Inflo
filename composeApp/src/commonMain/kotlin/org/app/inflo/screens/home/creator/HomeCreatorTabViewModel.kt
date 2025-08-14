@@ -7,9 +7,12 @@ import org.app.inflo.core.domain.CampaignFeedManager
 import org.app.inflo.core.viewmodel.AppBaseViewModel
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
+import org.app.inflo.db.CampaignActionType
+import org.app.inflo.screens.home.creator.domain.RecordCampaignDecisionUseCase
 
 class HomeCreatorTabViewModel(
-    private val feedManager: CampaignFeedManager
+    private val feedManager: CampaignFeedManager,
+    private val recordCampaignDecisionUseCase: RecordCampaignDecisionUseCase
 ) : AppBaseViewModel<HomeCreatorTabIntent, HomeCreatorTabState, HomeCreatorTabEffect>() {
 
     private var isInitialisationHandled: Boolean = false
@@ -58,11 +61,15 @@ class HomeCreatorTabViewModel(
 
     private fun handleCampaignAccepted(campaignId: String) {
         handledIds.update { it + campaignId }
-        // TODO: persist acceptance and/or call backend API when available
+        viewModelScope.launch {
+            recordCampaignDecisionUseCase.invoke(campaignId, CampaignActionType.ACCEPT)
+        }
     }
 
     private fun handleCampaignDenied(campaignId: String) {
         handledIds.update { it + campaignId }
-        // TODO: persist denial and/or call backend API when available
+        viewModelScope.launch {
+            recordCampaignDecisionUseCase.invoke(campaignId, CampaignActionType.DENY)
+        }
     }
 }

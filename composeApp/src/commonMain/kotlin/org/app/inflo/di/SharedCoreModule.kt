@@ -36,6 +36,10 @@ import org.koin.dsl.module
 import org.app.inflo.core.domain.CampaignFeedManager
 import org.app.inflo.core.domain.CampaignFeedManagerImpl
 import org.app.inflo.screens.home.creator.HomeCreatorTabViewModel
+import org.app.inflo.db.AppDatabase
+import org.app.inflo.db.AppDao
+import app.cash.sqldelight.db.SqlDriver
+import org.app.inflo.screens.home.creator.domain.RecordCampaignDecisionUseCase
 
 fun getSharedCoreModule() = module {
     includes(commonModule(), platformModule())
@@ -82,6 +86,7 @@ private fun commonModule() = module {
     factoryOf(::UpdateUserVerificationStatusUseCase)
     factoryOf(::FetchCampaignFeedUseCase)
     factoryOf(::HomeArgsResolver)
+    factoryOf(::RecordCampaignDecisionUseCase)
 
     // Managers
     factoryOf(::CampaignFeedManagerImpl) { bind<CampaignFeedManager>() }
@@ -91,6 +96,15 @@ private fun commonModule() = module {
 
     factoryOf(::HomeCreatorViewModel)
     factoryOf(::HomeCreatorTabViewModel)
+
+    // Database
+    single { params ->
+        val driver: SqlDriver = get()
+        AppDatabase(
+            driverFactory = { driver }
+        )
+    }
+    single<AppDao> { get<AppDatabase>().appDao }
 }
 
 internal expect fun platformModule(): Module 

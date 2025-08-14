@@ -16,10 +16,13 @@ import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginResponseApiModel
 import org.app.inflo.screens.login.domain.toAppModelOrNullIfInvalid
 import org.app.inflo.screens.login.exception.RequestOtpFailedException
+import org.app.inflo.db.AppDao
+import org.app.inflo.db.CampaignActionType
 
 class AppRepositoryImpl(
     private val localDataSource: AppLocalDataSource,
-    private val remoteDataSource: AppRemoteDataSource
+    private val remoteDataSource: AppRemoteDataSource,
+    private val appDao: AppDao
 ) : AppRepository {
 
     override fun loggedInUser(): Flow<UserAppModel?> {
@@ -73,5 +76,19 @@ class AppRepositoryImpl(
     
     override suspend fun fetchCampaignFeed(creatorId: String, page: Int): CampaignFetchResponseAppModel {
         return remoteDataSource.fetchCampaignFeed(creatorId, page).toAppModel()
+    }
+
+    override suspend fun recordCampaignDecision(
+        userId: String,
+        campaignId: String,
+        action: CampaignActionType,
+        updatedAt: Long
+    ) {
+        appDao.upsertDecision(
+            userId = userId,
+            campaignId = campaignId,
+            action = action,
+            updatedAt = updatedAt
+        )
     }
 }
