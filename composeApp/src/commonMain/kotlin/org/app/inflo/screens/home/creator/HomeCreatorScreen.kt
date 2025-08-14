@@ -13,9 +13,13 @@ import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import org.app.inflo.core.theme.AppTheme
 import org.app.inflo.core.ui.AppToolbar
 import org.app.inflo.screens.HomeCreatorBottomTabs
+import org.app.inflo.screens.home.HomeBottomTab
 
 @Composable
-fun HomeCreatorScreen(vm: HomeCreatorViewModel) {
+fun HomeCreatorScreen(
+    vm: HomeCreatorViewModel,
+    homeCreatorVm: HomeCreatorTabViewModel,
+) {
 
     val state by vm.viewState.collectAsStateWithLifecycle()
 
@@ -34,7 +38,19 @@ fun HomeCreatorScreen(vm: HomeCreatorViewModel) {
                 .fillMaxWidth()
                 .background(AppTheme.color.background)
         ) {
-            Text(state.selectedTab.name)
+            when(state.selectedTab) {
+                HomeBottomTab.HOME -> {
+                    HomeCreatorTabScreen(
+                        vm = homeCreatorVm,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+                }
+                HomeBottomTab.CAMPAIGN,
+                HomeBottomTab.PROFILE,
+                HomeBottomTab.CREATE -> Text(state.selectedTab.name)
+            }
         }
 
         HomeCreatorBottomTabs(

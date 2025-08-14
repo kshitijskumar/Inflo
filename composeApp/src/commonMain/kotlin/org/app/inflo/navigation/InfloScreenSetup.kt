@@ -14,6 +14,7 @@ import org.app.inflo.navigation.args.SplashArgs
 import org.app.inflo.navigation.args.VerificationPendingArgs
 import org.app.inflo.screens.LoginScreen
 import org.app.inflo.screens.home.creator.HomeCreatorScreen
+import org.app.inflo.screens.home.creator.HomeCreatorTabViewModel
 import org.app.inflo.screens.home.creator.HomeCreatorViewModel
 import org.app.inflo.screens.login.LoginViewModel
 import org.app.inflo.screens.onboarding.OnboardingScreen
@@ -60,6 +61,12 @@ fun RouteBuilder.setupScreen(scene: InfloScenes, navigationManager: InfloNavigat
                             vm = ViewModelFactory.viewModel(
                                 vmClass = HomeCreatorViewModel::class,
                                 args = this,
+                                stateHolder = currentLocalStateHolder
+                            ),
+                            homeCreatorVm = ViewModelFactory.viewModel(
+                                vmClass = HomeCreatorTabViewModel::class,
+                                args = this,
+                                key = "${this}_creator_home",
                                 stateHolder = currentLocalStateHolder
                             )
                         )

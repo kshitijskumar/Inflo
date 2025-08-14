@@ -33,6 +33,9 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.app.inflo.core.domain.CampaignFeedManager
+import org.app.inflo.core.domain.CampaignFeedManagerImpl
+import org.app.inflo.screens.home.creator.HomeCreatorTabViewModel
 
 fun getSharedCoreModule() = module {
     includes(commonModule(), platformModule())
@@ -80,10 +83,14 @@ private fun commonModule() = module {
     factoryOf(::FetchCampaignFeedUseCase)
     factoryOf(::HomeArgsResolver)
 
+    // Managers
+    factoryOf(::CampaignFeedManagerImpl) { bind<CampaignFeedManager>() }
+
     // Utils
     singleOf(::TimeUtilsImpl) { bind<TimeUtils>() }
 
     factoryOf(::HomeCreatorViewModel)
+    factoryOf(::HomeCreatorTabViewModel)
 }
 
 internal expect fun platformModule(): Module 
