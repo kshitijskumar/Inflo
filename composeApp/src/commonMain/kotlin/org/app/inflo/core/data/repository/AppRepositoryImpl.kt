@@ -2,12 +2,10 @@ package org.app.inflo.core.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import org.app.inflo.core.data.local.AppLocalDataSource
-import org.app.inflo.core.data.models.CampaignDisplayDataAppModel
 import org.app.inflo.core.data.models.CampaignFetchResponseAppModel
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.core.data.models.toAppModel
-import org.app.inflo.core.data.models.toAppModelOrNull
 import org.app.inflo.core.data.remote.AppRemoteDataSource
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
@@ -18,6 +16,9 @@ import org.app.inflo.screens.login.domain.toAppModelOrNullIfInvalid
 import org.app.inflo.screens.login.exception.RequestOtpFailedException
 import org.app.inflo.db.AppDao
 import org.app.inflo.db.CampaignActionType
+import org.app.inflo.core.data.models.CampaignDecisionDto
+import org.app.inflo.core.data.models.CampaignDecisionSyncResponse
+import org.app.inflo.db.Campaign_decisions
 
 class AppRepositoryImpl(
     private val localDataSource: AppLocalDataSource,
@@ -81,14 +82,33 @@ class AppRepositoryImpl(
     override suspend fun recordCampaignDecision(
         userId: String,
         campaignId: String,
-        action: CampaignActionType,
-        updatedAt: Long
+        action: CampaignActionType
     ) {
         appDao.upsertDecision(
             userId = userId,
             campaignId = campaignId,
-            action = action,
-            updatedAt = updatedAt
+            action = action
+        )
+    }
+
+    override suspend fun allPendingDecisionsForUser(userId: String): Flow<List<Campaign_decisions>> {
+        return appDao.allPendingDecisions(userId, Long.MAX_VALUE)
+    }
+
+    override suspend fun deleteCampaignDecision(userId: String, campaignId: String) {
+        appDao.deleteDecision(userId, campaignId)
+    }
+
+    override suspend fun deleteCampaignDecision(userId: String, campaignsList: List<String>) {
+        appDao.deleteDecision(userId, campaignsList)
+    }
+
+    override suspend fun syncCampaignDecisions(decisions: List<CampaignDecisionDto>): CampaignDecisionSyncResponse {
+        // TODO: Implement actual API call
+        // For now, return mock success response
+        return CampaignDecisionSyncResponse(
+            success = true,
+            syncedCount = decisions.size,
         )
     }
 }

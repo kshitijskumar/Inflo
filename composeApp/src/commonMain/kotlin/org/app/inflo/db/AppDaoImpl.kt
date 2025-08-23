@@ -1,7 +1,10 @@
 package org.app.inflo.db
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class AppDaoImpl(
@@ -11,26 +14,26 @@ class AppDaoImpl(
 	override suspend fun upsertDecision(
 		userId: String,
 		campaignId: String,
-		action: CampaignActionType,
-		updatedAt: Long
+		action: CampaignActionType
 	) {
 		withContext(ioDispatcher) {
 			queries.upsertDecision(
-				Campaign_decisions(
-					userId = userId,
-					campaignId = campaignId,
-					action = action,
-					updatedAt = updatedAt,
-					attemptCount = 0,
-					lastError = null,
-					status = CampaignDecisionStatus.PENDING
-				)
+				userId = userId,
+				campaignId = campaignId,
+				action = action
 			)
 		}
 	}
 
-	override suspend fun selectPending(limit: Long): List<Campaign_decisions> = withContext(ioDispatcher) {
-		queries.selectPending(limit).executeAsList()
+	override suspend fun allPendingDecisions(
+		userId: String,
+		limit: Long
+	): Flow<List<Campaign_decisions>> {
+		return queries
+			.selectPending(userId, limit)
+			.asFlow()
+			.mapToList(ioDispatcher)
+
 	}
 
 	override suspend fun deleteDecision(userId: String, campaignId: String) {
@@ -39,13 +42,13 @@ class AppDaoImpl(
 		}
 	}
 
-	override suspend fun markFailed(userId: String, campaignId: String, lastError: String?) {
+	override suspend fun deleteDecision(userId: String, campaignsList: List<String>) {
 		withContext(ioDispatcher) {
-			queries.markFailed(
-				lastError = lastError,
-				userId = userId,
-				campaignId = campaignId
-			)
+			queries.transaction {
+				campaignsList.forEach {
+					queries.deleteDecisions(userId, it)
+				}
+			}
 		}
 	}
-} 
+}

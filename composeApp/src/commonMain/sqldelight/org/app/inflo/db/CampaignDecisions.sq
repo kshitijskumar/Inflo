@@ -2,27 +2,18 @@ CREATE TABLE campaign_decisions (
   userId TEXT NOT NULL,
   campaignId TEXT NOT NULL,
   action TEXT AS org.app.inflo.db.CampaignActionType NOT NULL,
-  updatedAt INTEGER NOT NULL,
-  attemptCount INTEGER NOT NULL DEFAULT 0,
-  lastError TEXT,
-  status TEXT AS org.app.inflo.db.CampaignDecisionStatus NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY(userId, campaignId)
 );
 
 upsertDecision:
-INSERT OR REPLACE INTO campaign_decisions VALUES ?;
+INSERT OR REPLACE INTO campaign_decisions(userId, campaignId, action)
+VALUES (?, ?, ?);
 
 selectPending:
 SELECT * FROM campaign_decisions
-WHERE status = 'PENDING'
-ORDER BY updatedAt ASC
+WHERE userId = ?
 LIMIT ?;
 
 deleteDecisions:
 DELETE FROM campaign_decisions
-WHERE (userId = ? AND campaignId = ?);
-
-markFailed:
-UPDATE campaign_decisions
-SET attemptCount = attemptCount + 1, lastError = ?, status = 'FAILED'
 WHERE (userId = ? AND campaignId = ?); 

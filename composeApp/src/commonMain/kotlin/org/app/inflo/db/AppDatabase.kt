@@ -15,17 +15,11 @@ class AppDatabase(
 		override fun encode(value: CampaignActionType): String = value.name
 	}
 
-	private val decisionStatusAdapter = object : ColumnAdapter<CampaignDecisionStatus, String> {
-		override fun decode(databaseValue: String): CampaignDecisionStatus = CampaignDecisionStatus.valueOf(databaseValue)
-		override fun encode(value: CampaignDecisionStatus): String = value.name
-	}
-
 	private val database: InfloDatabase by lazy {
 		InfloDatabase(
 			driverFactory(),
 			campaign_decisionsAdapter = Campaign_decisions.Adapter(
-				actionAdapter = actionTypeAdapter,
-				statusAdapter = decisionStatusAdapter
+				actionAdapter = actionTypeAdapter
 			)
 		)
 	}

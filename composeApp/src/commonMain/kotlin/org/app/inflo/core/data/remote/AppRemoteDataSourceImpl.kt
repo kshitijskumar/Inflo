@@ -179,6 +179,7 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                     campaignId = "campaign_$campaignIndex",
                     campaignName = "Campaign $campaignIndex - ${getMockCampaignNames()[index % getMockCampaignNames().size]}",
                     url = "https://example.com/campaign/$campaignIndex",
+                    brandName = "Brand name: $campaignIndex",
                     brandId = "brand_${(campaignIndex % 5) + 1}",
                     brandInstagramAccount = "@brand${(campaignIndex % 5) + 1}",
                     requirements = CampaignRequirements(

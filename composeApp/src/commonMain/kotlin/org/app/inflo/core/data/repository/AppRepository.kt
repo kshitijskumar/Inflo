@@ -12,6 +12,9 @@ import org.app.inflo.screens.login.domain.RequestOtpResponseAppModel
 import org.app.inflo.screens.login.domain.VerifyLoginRequestApiModel
 import org.app.inflo.screens.login.domain.VerifyLoginResponseApiModel
 import org.app.inflo.db.CampaignActionType
+import org.app.inflo.core.data.models.CampaignDecisionDto
+import org.app.inflo.core.data.models.CampaignDecisionSyncResponse
+import org.app.inflo.db.Campaign_decisions
 
 interface AppRepository {
 
@@ -41,7 +44,14 @@ interface AppRepository {
     suspend fun recordCampaignDecision(
         userId: String,
         campaignId: String,
-        action: CampaignActionType,
-        updatedAt: Long
+        action: CampaignActionType
     )
+
+    suspend fun allPendingDecisionsForUser(userId: String): Flow<List<Campaign_decisions>>
+    
+    suspend fun deleteCampaignDecision(userId: String, campaignId: String)
+
+    suspend fun deleteCampaignDecision(userId: String, campaignsList: List<String>)
+
+    suspend fun syncCampaignDecisions(decisions: List<CampaignDecisionDto>): CampaignDecisionSyncResponse
 }

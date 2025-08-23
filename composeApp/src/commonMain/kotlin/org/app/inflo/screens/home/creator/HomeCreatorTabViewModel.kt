@@ -2,6 +2,7 @@ package org.app.inflo.screens.home.creator
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import org.app.inflo.core.domain.CampaignFeedManager
 import org.app.inflo.core.viewmodel.AppBaseViewModel
@@ -39,21 +40,19 @@ class HomeCreatorTabViewModel(
         initializeCoroutineScopeWhileVsCollected()
 
         // Observe feed status and reflect it in view state only when screen is active
-        viewModelScope.launch {
-            combine(
-                flow = feedManager.data,
-                flow2 = handledIds
-            ) { status, handledIds ->
-                val filtered = status.data?.filterNot { handledIds.contains(it.campaignId) }
-                updateState { current ->
-                    current.copy(
-                        campaigns = filtered,
-                        isLoading = status.isFetching,
-                        error = status.error
-                    )
-                }
+        combine(
+            flow = feedManager.data,
+            flow2 = handledIds
+        ) { status, handledIds ->
+            val filtered = status.data?.filterNot { handledIds.contains(it.campaignId) }
+            updateState { current ->
+                current.copy(
+                    campaigns = filtered,
+                    isLoading = status.isFetching,
+                    error = status.error
+                )
             }
-        }
+        }.launchIn(viewModelScope)
 
         // Kick off an initial fresh fetch
         feedManager.fetch(scope = viewModelScope, shouldFetchFresh = true)

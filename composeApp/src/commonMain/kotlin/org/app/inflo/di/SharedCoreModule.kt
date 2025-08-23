@@ -40,6 +40,9 @@ import org.app.inflo.db.AppDatabase
 import org.app.inflo.db.AppDao
 import app.cash.sqldelight.db.SqlDriver
 import org.app.inflo.screens.home.creator.domain.RecordCampaignDecisionUseCase
+import org.app.inflo.core.domain.CampaignDecisionSyncManager
+import org.app.inflo.core.domain.CampaignDecisionSyncManagerImpl
+import org.app.inflo.core.domain.SyncCampaignDecisionsUseCase
 
 fun getSharedCoreModule() = module {
     includes(commonModule(), platformModule())
@@ -87,9 +90,11 @@ private fun commonModule() = module {
     factoryOf(::FetchCampaignFeedUseCase)
     factoryOf(::HomeArgsResolver)
     factoryOf(::RecordCampaignDecisionUseCase)
+    factoryOf(::SyncCampaignDecisionsUseCase)
 
     // Managers
     factoryOf(::CampaignFeedManagerImpl) { bind<CampaignFeedManager>() }
+    singleOf(::CampaignDecisionSyncManagerImpl) { bind<CampaignDecisionSyncManager>() }
 
     // Utils
     singleOf(::TimeUtilsImpl) { bind<TimeUtils>() }

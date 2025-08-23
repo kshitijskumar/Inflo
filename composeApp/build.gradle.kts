@@ -53,6 +53,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.coroutine)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -21,6 +21,7 @@ data class CampaignDisplayDataApiModel(
     val categories: List<ContentCategory>?,
     val additionalRequirements: String?,
     val campaignBriefUrl: String?,
+    val brandName: String?
 )
 
 data class CampaignFetchResponseAppModel(
@@ -49,6 +50,7 @@ fun CampaignDisplayDataApiModel.toAppModelOrNull(): CampaignDisplayDataAppModel?
         categories = categories,
         additionalRequirements = additionalRequirements,
         campaignBriefUrl = campaignBriefUrl,
+        brandName = brandName ?: return null
     )
 }
 
@@ -57,6 +59,7 @@ data class CampaignDisplayDataAppModel(
     val campaignName: String,
     val url: String,
     val brandId: String,
+    val brandName: String,
     val brandInstagramAccount: String,
     val requirements: CampaignRequirements,
     val repostRights: Boolean,
