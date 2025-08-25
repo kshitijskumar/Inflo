@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import org.app.inflo.core.data.models.CampaignDisplayDataAppModel
 import org.app.inflo.core.theme.AppTheme
@@ -172,6 +175,24 @@ fun CampaignCard(
                     .background(Color(0xFFD3D3D3)),
                 contentAlignment = Alignment.Center
             ) {
+                // Debug: Print the URL being loaded
+                println("ImgStuff: Loading image from URL: ${campaign.url}")
+                
+                // Test with a simple image URL first
+                AsyncImage(
+                    model = campaign.url,
+                    contentDescription = campaign.brandName,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    onError = { error ->
+                        println("ImgStuff: Image load error: ${error.result.throwable}")
+                    },
+                    onSuccess = { success ->
+                        println("ImgStuff: Image load success!")
+                    }
+                )
+                
+                // Brand name overlay at the bottom
                 Text(
                     text = campaign.brandName,
                     style = MaterialTheme.typography.headlineSmall,
