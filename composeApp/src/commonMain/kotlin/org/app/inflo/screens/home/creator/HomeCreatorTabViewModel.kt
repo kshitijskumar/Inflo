@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import org.app.inflo.core.domain.CampaignFeedManager
+import org.app.inflo.core.utils.UrlOpener
 import org.app.inflo.core.viewmodel.AppBaseViewModel
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
@@ -13,7 +14,8 @@ import org.app.inflo.screens.home.creator.domain.RecordCampaignDecisionUseCase
 
 class HomeCreatorTabViewModel(
     private val feedManager: CampaignFeedManager,
-    private val recordCampaignDecisionUseCase: RecordCampaignDecisionUseCase
+    private val recordCampaignDecisionUseCase: RecordCampaignDecisionUseCase,
+    private val urlOpener: UrlOpener
 ) : AppBaseViewModel<HomeCreatorTabIntent, HomeCreatorTabState, HomeCreatorTabEffect>() {
 
     private var isInitialisationHandled: Boolean = false
@@ -29,6 +31,8 @@ class HomeCreatorTabViewModel(
             HomeCreatorTabIntent.InitialisationIntent -> handleInitialisationIntent()
             is HomeCreatorTabIntent.CampaignAcceptedIntent -> handleCampaignAccepted(intent.campaignId)
             is HomeCreatorTabIntent.CampaignDeniedIntent -> handleCampaignDenied(intent.campaignId)
+            is HomeCreatorTabIntent.OpenInstagramIntent -> handleOpenInstagram(intent.username)
+            is HomeCreatorTabIntent.OpenUrlIntent -> handleOpenUrl(intent.url)
         }
     }
 
@@ -69,6 +73,22 @@ class HomeCreatorTabViewModel(
         handledIds.update { it + campaignId }
         viewModelScope.launch {
             recordCampaignDecisionUseCase.invoke(campaignId, CampaignActionType.DENY)
+        }
+    }
+
+    private fun handleOpenInstagram(username: String) {
+        val success = urlOpener.openInstagram(username)
+        if (!success) {
+            // Could emit an effect here to show error message
+            println("Failed to open Instagram for username: $username")
+        }
+    }
+
+    private fun handleOpenUrl(url: String) {
+        val success = urlOpener.openUrl(url)
+        if (!success) {
+            // Could emit an effect here to show error message
+            println("Failed to open URL: $url")
         }
     }
 }

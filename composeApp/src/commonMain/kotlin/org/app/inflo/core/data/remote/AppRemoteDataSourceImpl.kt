@@ -178,10 +178,10 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                 CampaignDisplayDataApiModel(
                     campaignId = "campaign_$campaignIndex",
                     campaignName = "Campaign $campaignIndex - ${getMockCampaignNames()[index % getMockCampaignNames().size]}",
-                    url = "https://fastly.picsum.photos/id/8/5000/3333.jpg?hmac=OeG5ufhPYQBd6Rx1TAldAuF92lhCzAhKQKttGfawWuA",
+                    url = "https://images.pexels.com/photos/96938/pexels-photo-96938.jpeg",
                     brandName = "Brand name: $campaignIndex",
                     brandId = "brand_${(campaignIndex % 5) + 1}",
-                    brandInstagramAccount = "@brand${(campaignIndex % 5) + 1}",
+                    brandInstagramAccount = "@kshitijskumar",
                     requirements = CampaignRequirements(
                         reels = if (campaignIndex % 3 == 0) null else (campaignIndex % 3) + 1,
                         stories = if (campaignIndex % 4 == 0) null else (campaignIndex % 4) + 1,

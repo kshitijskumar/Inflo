@@ -14,6 +14,8 @@ sealed class HomeCreatorTabIntent {
     data object InitialisationIntent : HomeCreatorTabIntent()
     data class CampaignAcceptedIntent(val campaignId: String) : HomeCreatorTabIntent()
     data class CampaignDeniedIntent(val campaignId: String) : HomeCreatorTabIntent()
+    data class OpenInstagramIntent(val username: String) : HomeCreatorTabIntent()
+    data class OpenUrlIntent(val url: String) : HomeCreatorTabIntent()
 }
 
 sealed class HomeCreatorTabEffect {

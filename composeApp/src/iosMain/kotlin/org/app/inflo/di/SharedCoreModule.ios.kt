@@ -4,8 +4,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import org.app.inflo.core.constants.DataStoreConstants
+import org.app.inflo.core.utils.IOSUrlOpener
+import org.app.inflo.core.utils.UrlOpener
 import org.app.inflo.utils.DataStorePathHelper
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.app.inflo.db.DatabaseDriverFactory
@@ -21,4 +25,7 @@ internal actual fun platformModule(): Module = module {
 
     // SQLDelight Native driver
     single<SqlDriver> { DatabaseDriverFactory().createDriver() }
+    
+    // URL Opener
+    single<UrlOpener> { IOSUrlOpener() }
 } 

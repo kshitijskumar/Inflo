@@ -2,6 +2,7 @@ package org.app.inflo.screens.home.creator
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -109,6 +110,7 @@ fun HomeCreatorTabCampaignsSection(
                 campaigns.getOrNull(0)?.let { campaign ->
                     CampaignCard(
                         campaign = campaign,
+                        sendIntent = sendIntent,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
@@ -149,6 +151,7 @@ fun HomeCreatorTabCampaignsSection(
 @Composable
 fun CampaignCard(
     campaign: CampaignDisplayDataAppModel,
+    sendIntent: (HomeCreatorTabIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -183,13 +186,7 @@ fun CampaignCard(
                     model = campaign.url,
                     contentDescription = campaign.brandName,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                    onError = { error ->
-                        println("ImgStuff: Image load error: ${error.result.throwable}")
-                    },
-                    onSuccess = { success ->
-                        println("ImgStuff: Image load success!")
-                    }
+                    contentScale = ContentScale.Crop
                 )
                 
                 // Brand name overlay at the bottom
@@ -211,10 +208,13 @@ fun CampaignCard(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Company IG Button
+            // Company IG Button - Now clickable!
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .clickable {
+                        sendIntent(HomeCreatorTabIntent.OpenInstagramIntent(campaign.brandInstagramAccount))
+                    }
                     .background(
                         color = AppTheme.color.baseRed,
                         shape = RoundedCornerShape(25.dp)
@@ -260,11 +260,14 @@ fun CampaignCard(
                 }
             }
 
-            // Brand Brief Section
+            // Brand Brief Section - Now clickable!
             if (!campaign.campaignBriefUrl.isNullOrBlank()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .clickable {
+                            sendIntent(HomeCreatorTabIntent.OpenUrlIntent(campaign.campaignBriefUrl))
+                        }
                         .background(
                             color = AppTheme.color.secondaryRed,
                             shape = RoundedCornerShape(12.dp)
