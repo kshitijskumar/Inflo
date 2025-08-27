@@ -6,6 +6,7 @@ import org.app.inflo.core.data.models.CampaignDisplayDataAppModel
 import org.app.inflo.core.data.models.CampaignFetchResponseAppModel
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
+import org.app.inflo.screens.home.creator.domain.ExtraQuestionAnswer
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseAppModel
@@ -44,7 +45,8 @@ interface AppRepository {
     suspend fun recordCampaignDecision(
         userId: String,
         campaignId: String,
-        action: CampaignActionType
+        action: CampaignActionType,
+        extraQuestionAnswers: List<ExtraQuestionAnswer>? = null
     )
 
     suspend fun allPendingDecisionsForUser(userId: String): Flow<List<Campaign_decisions>>

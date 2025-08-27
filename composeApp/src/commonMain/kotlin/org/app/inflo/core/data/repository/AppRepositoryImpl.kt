@@ -7,6 +7,7 @@ import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.core.data.models.toAppModel
 import org.app.inflo.core.data.remote.AppRemoteDataSource
+import org.app.inflo.screens.home.creator.domain.ExtraQuestionAnswer
 import org.app.inflo.screens.login.domain.RequestOtpRequestApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseApiModel
 import org.app.inflo.screens.login.domain.RequestOtpResponseAppModel
@@ -82,13 +83,23 @@ class AppRepositoryImpl(
     override suspend fun recordCampaignDecision(
         userId: String,
         campaignId: String,
-        action: CampaignActionType
+        action: CampaignActionType,
+        extraQuestionAnswers: List<ExtraQuestionAnswer>?
     ) {
-        appDao.upsertDecision(
-            userId = userId,
-            campaignId = campaignId,
-            action = action
-        )
+        if (extraQuestionAnswers != null) {
+            appDao.upsertDecisionWithAnswers(
+                userId = userId,
+                campaignId = campaignId,
+                action = action,
+                extraQuestionAnswers = extraQuestionAnswers
+            )
+        } else {
+            appDao.upsertDecision(
+                userId = userId,
+                campaignId = campaignId,
+                action = action
+            )
+        }
     }
 
     override suspend fun allPendingDecisionsForUser(userId: String): Flow<List<Campaign_decisions>> {

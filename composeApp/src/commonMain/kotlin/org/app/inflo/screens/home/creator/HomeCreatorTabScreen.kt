@@ -24,8 +24,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +52,7 @@ import org.app.inflo.core.ui.AppPrimaryButton
 import org.app.inflo.core.ui.AppSecondaryButton
 import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeCreatorTabScreen(
     vm: HomeCreatorTabViewModel,
@@ -55,6 +60,7 @@ fun HomeCreatorTabScreen(
 ) {
 
     val state by vm.viewState.collectAsStateWithLifecycle()
+    val bottomSheetState = rememberModalBottomSheetState(true)
 
     LaunchedEffect(vm) {
         vm.processIntent(HomeCreatorTabIntent.InitialisationIntent)
@@ -79,6 +85,34 @@ fun HomeCreatorTabScreen(
                 )
             }
         }
+    }
+
+    state.bottomSheet?.let { bsType ->
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            dragHandle = null,
+            onDismissRequest = {
+                vm.processIntent(HomeCreatorTabIntent.BottomSheetDismissed)
+            },
+            containerColor = AppTheme.color.white,
+            properties = ModalBottomSheetProperties(false),
+            content = {
+                when(bsType) {
+                    is HomeCreatorTabBottomSheet.ExtraQuestions -> {
+                        ExtraQuestionsBottomSheet(
+                            questions = bsType.questions,
+                            enableContinueBtn = bsType.enableContinueBtn,
+                            onQuestionAnswered = { questionModel, ansEntered ->
+                                vm.processIntent(HomeCreatorTabIntent.OnQuestionAnsweredIntent(questionModel, ansEntered))
+                            },
+                            onContinueClicked = {
+                                vm.processIntent(HomeCreatorTabIntent.ExtraQuestionsContinueClicked(bsType.campaignId))
+                            },
+                        )
+                    }
+                }
+            }
+        )
     }
 
 }

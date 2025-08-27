@@ -1,6 +1,7 @@
 package org.app.inflo.core.data.remote
 
 import kotlinx.coroutines.delay
+import org.app.inflo.core.data.models.CampaignAdditionalQuestions
 import org.app.inflo.core.data.models.CampaignDisplayDataApiModel
 import org.app.inflo.core.data.models.CampaignFetchResponseApiModel
 import org.app.inflo.core.data.models.CampaignRequirements
@@ -190,7 +191,8 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
                     repostRights = campaignIndex % 3 == 0,
                     categories = getMockCategories().take((campaignIndex % 3) + 1),
                     additionalRequirements = if (campaignIndex % 4 == 0) "Must tag @brand${(campaignIndex % 5) + 1} in caption" else null,
-                    campaignBriefUrl = if (campaignIndex % 3 == 0) "https://example.com/brief/$campaignIndex" else null
+                    campaignBriefUrl = if (campaignIndex % 3 == 0) "https://example.com/brief/$campaignIndex" else null,
+                    extraQuestions = if (campaignIndex % 2 == 0) getMockExtraQuestions() else null
                 )
             )
         }
@@ -229,6 +231,15 @@ class AppRemoteDataSourceImpl : AppRemoteDataSource {
             ContentCategory("art", "Art"),
             ContentCategory("food", "Food"),
             ContentCategory("gaming", "Gaming")
+        )
+    }
+
+    private fun getMockExtraQuestions(): List<CampaignAdditionalQuestions> {
+        return listOf(
+            CampaignAdditionalQuestions("What is your preferred content style?"),
+            CampaignAdditionalQuestions("Do you have experience with this type of product?"),
+            CampaignAdditionalQuestions("What is your target audience age group?"),
+            CampaignAdditionalQuestions("How many followers do you have in the relevant niche?")
         )
     }
 } 

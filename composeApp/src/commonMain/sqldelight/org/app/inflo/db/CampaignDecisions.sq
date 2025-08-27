@@ -2,12 +2,17 @@ CREATE TABLE campaign_decisions (
   userId TEXT NOT NULL,
   campaignId TEXT NOT NULL,
   action TEXT AS org.app.inflo.db.CampaignActionType NOT NULL,
+  extraQuestionAnswers TEXT,
   PRIMARY KEY(userId, campaignId)
 );
 
 upsertDecision:
-INSERT OR REPLACE INTO campaign_decisions(userId, campaignId, action)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO campaign_decisions(userId, campaignId, action, extraQuestionAnswers)
+VALUES (?, ?, ?, ?);
+
+upsertDecisionWithAnswers:
+INSERT OR REPLACE INTO campaign_decisions(userId, campaignId, action, extraQuestionAnswers)
+VALUES (?, ?, ?, ?);
 
 selectPending:
 SELECT * FROM campaign_decisions

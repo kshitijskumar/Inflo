@@ -43,6 +43,7 @@ import org.app.inflo.screens.home.creator.domain.RecordCampaignDecisionUseCase
 import org.app.inflo.core.domain.CampaignDecisionSyncManager
 import org.app.inflo.core.domain.CampaignDecisionSyncManagerImpl
 import org.app.inflo.core.domain.SyncCampaignDecisionsUseCase
+import org.app.inflo.screens.home.creator.domain.RecordCampaignAcceptanceWithExtraQuestionsUseCase
 
 fun getSharedCoreModule() = module {
     includes(commonModule(), platformModule())
@@ -90,6 +91,7 @@ private fun commonModule() = module {
     factoryOf(::FetchCampaignFeedUseCase)
     factoryOf(::HomeArgsResolver)
     factoryOf(::RecordCampaignDecisionUseCase)
+    factoryOf(::RecordCampaignAcceptanceWithExtraQuestionsUseCase)
     factoryOf(::SyncCampaignDecisionsUseCase)
 
     // Managers

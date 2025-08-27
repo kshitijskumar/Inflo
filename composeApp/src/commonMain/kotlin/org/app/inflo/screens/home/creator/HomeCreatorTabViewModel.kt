@@ -11,10 +11,14 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import org.app.inflo.db.CampaignActionType
 import org.app.inflo.screens.home.creator.domain.RecordCampaignDecisionUseCase
+import org.app.inflo.core.data.models.CampaignAdditionalQuestionAppModel
+import org.app.inflo.screens.home.creator.domain.CampaignAcceptanceData
+import org.app.inflo.screens.home.creator.domain.ExtraQuestionAnswer
+import org.app.inflo.screens.home.creator.domain.RecordCampaignAcceptanceWithExtraQuestionsUseCase
 
 class HomeCreatorTabViewModel(
     private val feedManager: CampaignFeedManager,
-    private val recordCampaignDecisionUseCase: RecordCampaignDecisionUseCase,
+    private val recordCampaignAcceptanceWithExtraQuestionsUseCase: RecordCampaignAcceptanceWithExtraQuestionsUseCase,
     private val urlOpener: UrlOpener
 ) : AppBaseViewModel<HomeCreatorTabIntent, HomeCreatorTabState, HomeCreatorTabEffect>() {
 
@@ -29,8 +33,11 @@ class HomeCreatorTabViewModel(
         super.processIntent(intent)
         when(intent) {
             HomeCreatorTabIntent.InitialisationIntent -> handleInitialisationIntent()
-            is HomeCreatorTabIntent.CampaignAcceptedIntent -> handleCampaignAccepted(intent.campaignId)
+            is HomeCreatorTabIntent.CampaignAcceptedIntent -> handleCampaignAcceptTapped(intent.campaignId)
             is HomeCreatorTabIntent.CampaignDeniedIntent -> handleCampaignDenied(intent.campaignId)
+            is HomeCreatorTabIntent.OnQuestionAnsweredIntent -> handleQuestionAnswered(intent.question, intent.answer)
+            is HomeCreatorTabIntent.ExtraQuestionsContinueClicked -> handleExtraQuestionsContinue(intent.campaignId)
+            HomeCreatorTabIntent.BottomSheetDismissed -> clearBottomSheet()
             is HomeCreatorTabIntent.OpenInstagramIntent -> handleOpenInstagram(intent.username)
             is HomeCreatorTabIntent.OpenUrlIntent -> handleOpenUrl(intent.url)
         }
@@ -62,17 +69,87 @@ class HomeCreatorTabViewModel(
         feedManager.fetch(scope = viewModelScope, shouldFetchFresh = true)
     }
 
-    private fun handleCampaignAccepted(campaignId: String) {
+    private fun handleCampaignAcceptTapped(campaignId: String) {
+        val campaign = viewState.value.campaigns?.firstOrNull { it.campaignId == campaignId }
+        if (campaign == null) return
+
+        val extraQuestions = campaign.extraQuestions
+        if (extraQuestions.isNullOrEmpty()) {
+            // No extra questions: accept immediately
+            handleCampaignAccepted(campaignId, null)
+        } else {
+            // Show bottom sheet with extra questions (answers will be empty strings initially)
+            updateState {
+                it.copy(
+                    bottomSheet = HomeCreatorTabBottomSheet.ExtraQuestions(
+                        campaignId = campaignId,
+                        questions = extraQuestions,
+                        enableContinueBtn = false
+                    )
+                )
+            }
+        }
+    }
+
+    private fun handleQuestionAnswered(question: CampaignAdditionalQuestionAppModel, answer: String) {
+        val currentBottomSheet = viewState.value.bottomSheet
+        if (currentBottomSheet !is HomeCreatorTabBottomSheet.ExtraQuestions) return
+
+        val updatedQuestions = currentBottomSheet.questions.map { questionModel ->
+            if (questionModel.question == question.question) {
+                questionModel.copy(answer = answer)
+            } else {
+                questionModel
+            }
+        }
+
+        updateState { 
+            it.copy(
+                bottomSheet = currentBottomSheet.copy(
+                    questions = updatedQuestions,
+                    enableContinueBtn = updatedQuestions.all { ans -> ans.answer.isNotBlank() }
+                )
+            )
+        }
+    }
+
+    private fun handleExtraQuestionsContinue(campaignId: String) {
+        // For now we don't collect answers. Just accept and clear bottom sheet.
+        val bsType = viewState.value.bottomSheet as? HomeCreatorTabBottomSheet.ExtraQuestions ?: return
+        clearBottomSheet()
+        handleCampaignAccepted(campaignId, bsType.questions)
+    }
+
+    private fun clearBottomSheet() {
+        updateState { it.copy(bottomSheet = null) }
+    }
+
+    private fun handleCampaignAccepted(
+        campaignId: String,
+        answers: List<CampaignAdditionalQuestionAppModel>?
+    ) {
         handledIds.update { it + campaignId }
         viewModelScope.launch {
-            recordCampaignDecisionUseCase.invoke(campaignId, CampaignActionType.ACCEPT)
+            recordCampaignAcceptanceWithExtraQuestionsUseCase.invoke(
+                CampaignAcceptanceData(
+                    campaignId = campaignId,
+                    extraQuestionAnswers = answers?.map { ExtraQuestionAnswer(it.question, it.answer) },
+                    actionType = CampaignActionType.ACCEPT
+                )
+            )
         }
     }
 
     private fun handleCampaignDenied(campaignId: String) {
         handledIds.update { it + campaignId }
         viewModelScope.launch {
-            recordCampaignDecisionUseCase.invoke(campaignId, CampaignActionType.DENY)
+            recordCampaignAcceptanceWithExtraQuestionsUseCase.invoke(
+                CampaignAcceptanceData(
+                    campaignId = campaignId,
+                    extraQuestionAnswers = null,
+                    actionType = CampaignActionType.DENY
+                )
+            )
         }
     }
 

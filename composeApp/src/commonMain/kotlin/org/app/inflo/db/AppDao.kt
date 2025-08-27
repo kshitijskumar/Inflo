@@ -1,6 +1,7 @@
 package org.app.inflo.db
 
 import kotlinx.coroutines.flow.Flow
+import org.app.inflo.screens.home.creator.domain.ExtraQuestionAnswer
 
 interface AppDao {
 	// Inserts or updates a decision for a (userId, campaignId)
@@ -8,6 +9,14 @@ interface AppDao {
 		userId: String,
 		campaignId: String,
 		action: CampaignActionType
+	)
+
+	// Inserts or updates a decision with extra question answers
+	suspend fun upsertDecisionWithAnswers(
+		userId: String,
+		campaignId: String,
+		action: CampaignActionType,
+		extraQuestionAnswers: List<ExtraQuestionAnswer>?
 	)
 
 	// Returns pending decisions up to a limit, ordered by rowid ASC

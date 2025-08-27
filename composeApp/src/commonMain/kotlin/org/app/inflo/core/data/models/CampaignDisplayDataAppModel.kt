@@ -21,7 +21,13 @@ data class CampaignDisplayDataApiModel(
     val categories: List<ContentCategory>?,
     val additionalRequirements: String?,
     val campaignBriefUrl: String?,
-    val brandName: String?
+    val brandName: String?,
+    val extraQuestions: List<CampaignAdditionalQuestions>?
+)
+
+@Serializable
+data class CampaignAdditionalQuestions(
+    val ques: String?
 )
 
 data class CampaignFetchResponseAppModel(
@@ -50,7 +56,8 @@ fun CampaignDisplayDataApiModel.toAppModelOrNull(): CampaignDisplayDataAppModel?
         categories = categories,
         additionalRequirements = additionalRequirements,
         campaignBriefUrl = campaignBriefUrl,
-        brandName = brandName ?: return null
+        brandName = brandName ?: return null,
+        extraQuestions = extraQuestions?.map { it.toAppModel() }
     )
 }
 
@@ -66,7 +73,20 @@ data class CampaignDisplayDataAppModel(
     val categories: List<ContentCategory>?,
     val additionalRequirements: String?,
     val campaignBriefUrl: String?,
+    val extraQuestions: List<CampaignAdditionalQuestionAppModel>?
 )
+
+data class CampaignAdditionalQuestionAppModel(
+    val question: String,
+    val answer: String = ""
+)
+
+fun CampaignAdditionalQuestions.toAppModel(): CampaignAdditionalQuestionAppModel {
+    return CampaignAdditionalQuestionAppModel(
+        question = ques ?: "",
+        answer = ""
+    )
+}
 
 @Serializable
 data class CampaignRequirements(

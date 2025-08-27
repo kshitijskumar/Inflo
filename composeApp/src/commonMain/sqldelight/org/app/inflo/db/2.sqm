@@ -1,0 +1,1 @@
+ALTER TABLE campaign_decisions ADD COLUMN extraQuestionAnswers TEXT; 
