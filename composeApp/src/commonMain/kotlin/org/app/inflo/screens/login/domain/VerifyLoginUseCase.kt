@@ -2,6 +2,7 @@ package org.app.inflo.screens.login.domain
 
 import kotlinx.serialization.Serializable
 import org.app.inflo.core.data.models.ContentCategory
+import org.app.inflo.core.data.models.CreatorBankDetailsAppModel
 import org.app.inflo.core.data.models.OnboardedUser
 import org.app.inflo.core.data.models.UserAppModel
 import org.app.inflo.core.data.repository.AppRepository
@@ -56,7 +57,8 @@ data class VerifyLoginResponseApiModel(
     val brandName: String?,
     val instagramAccountName: String?,
     val categories: List<ContentCategory>?,
-    val profileVerificationStatus: String?
+    val profileVerificationStatus: String?,
+    val bankDetails: CreatorBankDetailsAppModel? = null
 )
 
 @Serializable

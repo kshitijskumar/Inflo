@@ -44,6 +44,7 @@ import org.app.inflo.core.domain.CampaignDecisionSyncManager
 import org.app.inflo.core.domain.CampaignDecisionSyncManagerImpl
 import org.app.inflo.core.domain.SyncCampaignDecisionsUseCase
 import org.app.inflo.screens.home.creator.domain.RecordCampaignAcceptanceWithExtraQuestionsUseCase
+import org.app.inflo.screens.creatordetails.CreatorDetailsViewModel
 
 fun getSharedCoreModule() = module {
     includes(commonModule(), platformModule())
@@ -103,6 +104,12 @@ private fun commonModule() = module {
 
     factoryOf(::HomeCreatorViewModel)
     factoryOf(::HomeCreatorTabViewModel)
+    factory {
+        CreatorDetailsViewModel(
+            repository = get(),
+            navigationManager = get()
+        )
+    }
 
     // Database
     single { params ->

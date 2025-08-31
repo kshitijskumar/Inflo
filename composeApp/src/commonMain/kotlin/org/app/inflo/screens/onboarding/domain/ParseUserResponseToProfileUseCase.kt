@@ -59,7 +59,8 @@ class ParseUserResponseToProfileUseCase {
             firstName = response.firstName ?: return null,
             lastName = response.lastName ?: return null,
             dob = response.dob ?: return null,
-            categories = response.categories ?: return null
+            categories = response.categories ?: return null,
+            bankDetails = response.bankDetails
         )
     }
 
@@ -71,7 +72,8 @@ class ParseUserResponseToProfileUseCase {
             lastName = response.lastName,
             dob = response.dob,
             categories = response.categories,
-            verificationStatus = ProfileVerificationStatus.safeValueOf(response.profileVerificationStatus ?: "") ?: ProfileVerificationStatus.VERIFICATION_PENDING
+            verificationStatus = ProfileVerificationStatus.safeValueOf(response.profileVerificationStatus ?: "") ?: ProfileVerificationStatus.VERIFICATION_PENDING,
+            bankDetails = response.bankDetails
         )
     }
 }

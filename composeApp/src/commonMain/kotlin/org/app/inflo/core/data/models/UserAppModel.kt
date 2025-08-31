@@ -15,6 +15,7 @@ sealed class UserAppModel {
         val lastName: String,
         val dob: Long,
         val categories: List<ContentCategory>,
+        val bankDetails: CreatorBankDetailsAppModel?
     ) : UserAppModel()
 
     @Serializable
@@ -36,7 +37,8 @@ sealed class OnboardedUser {
         val lastName: String?,
         val dob: Long?,
         val categories: List<ContentCategory>?,
-        val verificationStatus: ProfileVerificationStatus
+        val verificationStatus: ProfileVerificationStatus,
+        val bankDetails: CreatorBankDetailsAppModel?
     ) : OnboardedUser()
 
     @Serializable
@@ -55,6 +57,14 @@ sealed class OnboardedUser {
 data class ContentCategory(
     val id: String,
     val name: String
+)
+
+@Serializable
+data class CreatorBankDetailsAppModel(
+    val accountHolderName: String,
+    val bankAccountNumber: String,
+    val bankName: String,
+    val ifscCode: String
 )
 
 enum class ProfileVerificationStatus {
