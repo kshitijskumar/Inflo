@@ -27,6 +27,11 @@ class CreatorDetailsViewModel(
         super.processIntent(intent)
         when(intent) {
             CreatorDetailsIntent.InitialisationIntent -> handleInitialisationIntent()
+            is CreatorDetailsIntent.AccountHolderNameEnteredIntent -> handleAccountHolderNameEntered(intent)
+            is CreatorDetailsIntent.BankAccountNumberEnteredIntent -> handleBankAccountNumberEntered(intent)
+            is CreatorDetailsIntent.ConfirmBankAccountNumberEnteredIntent -> handleConfirmBankAccountNumberEntered(intent)
+            is CreatorDetailsIntent.BankNameEnteredIntent -> handleBankNameEntered(intent)
+            is CreatorDetailsIntent.IfscCodeEnteredIntent -> handleIfscCodeEntered(intent)
         }
     }
 
@@ -66,6 +71,66 @@ class CreatorDetailsViewModel(
                     enableFinishBtn = finishBtnEnabledForBankDetails(bankEntries)
                 )
             }
+        }
+    }
+
+    private fun handleAccountHolderNameEntered(intent: CreatorDetailsIntent.AccountHolderNameEnteredIntent) {
+        updateState { currentState ->
+            val updatedBankEntries = currentState.bankEntries.copy(
+                accountHolderName = intent.value
+            )
+            currentState.copy(
+                bankEntries = updatedBankEntries,
+                enableFinishBtn = finishBtnEnabledForBankDetails(updatedBankEntries)
+            )
+        }
+    }
+
+    private fun handleBankAccountNumberEntered(intent: CreatorDetailsIntent.BankAccountNumberEnteredIntent) {
+        updateState { currentState ->
+            val updatedBankEntries = currentState.bankEntries.copy(
+                bankAccountNumber = intent.value
+            )
+            currentState.copy(
+                bankEntries = updatedBankEntries,
+                enableFinishBtn = finishBtnEnabledForBankDetails(updatedBankEntries)
+            )
+        }
+    }
+
+    private fun handleConfirmBankAccountNumberEntered(intent: CreatorDetailsIntent.ConfirmBankAccountNumberEnteredIntent) {
+        updateState { currentState ->
+            val updatedBankEntries = currentState.bankEntries.copy(
+                confirmBankAccountNumber = intent.value
+            )
+            currentState.copy(
+                bankEntries = updatedBankEntries,
+                enableFinishBtn = finishBtnEnabledForBankDetails(updatedBankEntries)
+            )
+        }
+    }
+
+    private fun handleBankNameEntered(intent: CreatorDetailsIntent.BankNameEnteredIntent) {
+        updateState { currentState ->
+            val updatedBankEntries = currentState.bankEntries.copy(
+                bankName = intent.value
+            )
+            currentState.copy(
+                bankEntries = updatedBankEntries,
+                enableFinishBtn = finishBtnEnabledForBankDetails(updatedBankEntries)
+            )
+        }
+    }
+
+    private fun handleIfscCodeEntered(intent: CreatorDetailsIntent.IfscCodeEnteredIntent) {
+        updateState { currentState ->
+            val updatedBankEntries = currentState.bankEntries.copy(
+                ifscCode = intent.value.uppercase()
+            )
+            currentState.copy(
+                bankEntries = updatedBankEntries,
+                enableFinishBtn = finishBtnEnabledForBankDetails(updatedBankEntries)
+            )
         }
     }
 
